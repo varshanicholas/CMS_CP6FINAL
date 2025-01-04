@@ -11,11 +11,9 @@ public partial class DailyAppointmentAvailability
 
     public int Token { get; set; }
 
-    public int PatientId { get; set; }
+    public int AppointmentId { get; set; }
+
+    public virtual NewAppointment Appointment { get; set; } = null!;
 
     public virtual DoctorAvailability? DocAvl { get; set; }
-
-    public virtual ICollection<NewAppointment> NewAppointments { get; set; } = new List<NewAppointment>();
-
-    public virtual Patient Patient { get; set; } = null!;
 }

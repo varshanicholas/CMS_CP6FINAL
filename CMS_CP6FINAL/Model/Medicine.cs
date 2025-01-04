@@ -15,7 +15,7 @@ public partial class Medicine
 
     public int MedicineCategoryId { get; set; }
 
-    public string Unit { get; set; } = null!;
+    public string Cost { get; set; } = null!;
 
     public bool IsActive { get; set; }
 

@@ -1,6 +1,10 @@
 using CMS_CP6FINAL.Model;
+
 using CMS_CP6FINAL.Repository;
 using CMS_CP6FINAL.Service;
+
+
+
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS_CP6FINAL
@@ -28,8 +32,20 @@ namespace CMS_CP6FINAL
              });
             //connection string as Middleware
 
-            builder.Services.AddDbContext<CmsCamp6finalContext>(
-                options => options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
+            // Add services to the container.
+          
+
+
+
+            builder.Services.AddDbContext<CmsCamp6finalContext>(options =>
+                     options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
+
+            builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
+            builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
+            // builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
+            // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
+            builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
+
 
             //ADMINS
             // Register Repository and Service layer
@@ -39,9 +55,14 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+
             //swagger registration
 
             builder.Services.AddSwaggerGen();
+
+            
+
+
 
             var app = builder.Build();
 
