@@ -23,8 +23,6 @@ public partial class Patient
 
     public DateTime CreatedDate { get; set; }
 
-    public virtual ICollection<DailyAppointmentAvailability> DailyAppointmentAvailabilities { get; set; } = new List<DailyAppointmentAvailability>();
-
     public virtual ICollection<DoctorReferral> DoctorReferrals { get; set; } = new List<DoctorReferral>();
 
     public virtual ICollection<NewAppointment> NewAppointments { get; set; } = new List<NewAppointment>();

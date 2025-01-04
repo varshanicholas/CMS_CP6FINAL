@@ -4,7 +4,7 @@ namespace CMS_CP6FINAL.Repository
 {
     public interface IDoctorLabTestRepository
     {
-        Task<IEnumerable<DoctorLabTestViewModel>> GetDailyLabTestsAsync(DateTime date);
+       // Task<IEnumerable<DoctorLabTestViewModel>> GetDailyLabTestsAsync(DateTime date);
     }
 
 }

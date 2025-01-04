@@ -53,11 +53,7 @@ public partial class CmsCamp6finalContext : DbContext
 
     public virtual DbSet<Staff> Staff { get; set; }
 
-    public virtual DbSet<TimeSlot> TimeSlots { get; set; }
-
     public virtual DbSet<UserRegistration> UserRegistrations { get; set; }
-
-    public virtual DbSet<Weekday> Weekdays { get; set; }
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -67,23 +63,23 @@ public partial class CmsCamp6finalContext : DbContext
     {
         modelBuilder.Entity<DailyAppointmentAvailability>(entity =>
         {
-            entity.HasKey(e => e.DailyAppointmentId).HasName("PK__DailyApp__A240DF9410A91E4F");
+            entity.HasKey(e => e.DailyAppointmentId).HasName("PK__DailyApp__A240DF944E350FFC");
 
             entity.ToTable("DailyAppointmentAvailability");
 
+            entity.HasOne(d => d.Appointment).WithMany(p => p.DailyAppointmentAvailabilities)
+                .HasForeignKey(d => d.AppointmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__DailyAppo__Appoi__5812160E");
+
             entity.HasOne(d => d.DocAvl).WithMany(p => p.DailyAppointmentAvailabilities)
                 .HasForeignKey(d => d.DocAvlId)
-                .HasConstraintName("FK__DailyAppo__DocAv__29221CFB");
-
-            entity.HasOne(d => d.Patient).WithMany(p => p.DailyAppointmentAvailabilities)
-                .HasForeignKey(d => d.PatientId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DailyAppo__Patie__2A164134");
+                .HasConstraintName("FK__DailyAppo__DocAv__59063A47");
         });
 
         modelBuilder.Entity<Department>(entity =>
         {
-            entity.HasKey(e => e.DepartmentId).HasName("PK__Departme__B2079BED48A5BDFA");
+            entity.HasKey(e => e.DepartmentId).HasName("PK__Departme__B2079BEDA148E6E4");
 
             entity.ToTable("Department");
 
@@ -93,12 +89,12 @@ public partial class CmsCamp6finalContext : DbContext
 
             entity.HasOne(d => d.Specialization).WithMany(p => p.Departments)
                 .HasForeignKey(d => d.SpecializationId)
-                .HasConstraintName("FK__Departmen__Speci__2B0A656D");
+                .HasConstraintName("FK__Departmen__Speci__3A81B327");
         });
 
         modelBuilder.Entity<Doctor>(entity =>
         {
-            entity.HasKey(e => e.DoctorId).HasName("PK__Doctor__2DC00EBF58441DDA");
+            entity.HasKey(e => e.DoctorId).HasName("PK__Doctor__2DC00EBF08B153EF");
 
             entity.ToTable("Doctor");
 
@@ -107,34 +103,34 @@ public partial class CmsCamp6finalContext : DbContext
             entity.HasOne(d => d.Staff).WithMany(p => p.Doctors)
                 .HasForeignKey(d => d.StaffId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Doctor__StaffId__2BFE89A6");
+                .HasConstraintName("FK__Doctor__StaffId__403A8C7D");
         });
 
         modelBuilder.Entity<DoctorAvailability>(entity =>
         {
-            entity.HasKey(e => e.DocAvlId).HasName("PK__Doctor_A__387178EFE630F48B");
+            entity.HasKey(e => e.DocAvlId).HasName("PK__Doctor_A__387178EF3F56C47F");
 
             entity.ToTable("Doctor_Availability");
 
-            entity.HasOne(d => d.Doc).WithMany(p => p.DoctorAvailabilities)
-                .HasForeignKey(d => d.DocId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Doctor_Av__DocId__2CF2ADDF");
+            entity.Property(e => e.EveningSession)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.MorningSession)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+            entity.Property(e => e.Weekdays)
+                .HasMaxLength(500)
+                .IsUnicode(false);
 
-            entity.HasOne(d => d.TimeSlot).WithMany(p => p.DoctorAvailabilities)
-                .HasForeignKey(d => d.TimeSlotId)
+            entity.HasOne(d => d.Doctor).WithMany(p => p.DoctorAvailabilities)
+                .HasForeignKey(d => d.DoctorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Doctor_Av__TimeS__2DE6D218");
-
-            entity.HasOne(d => d.Week).WithMany(p => p.DoctorAvailabilities)
-                .HasForeignKey(d => d.WeekId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Doctor_Av__WeekI__2EDAF651");
+                .HasConstraintName("FK__Doctor_Av__Docto__46E78A0C");
         });
 
         modelBuilder.Entity<DoctorReferral>(entity =>
         {
-            entity.HasKey(e => e.ReferralId).HasName("PK__DoctorRe__A2C4A966960061DC");
+            entity.HasKey(e => e.ReferralId).HasName("PK__DoctorRe__A2C4A96626B00866");
 
             entity.Property(e => e.ReferralDate)
                 .HasDefaultValueSql("(getdate())")
@@ -143,31 +139,31 @@ public partial class CmsCamp6finalContext : DbContext
             entity.HasOne(d => d.Appointment).WithMany(p => p.DoctorReferrals)
                 .HasForeignKey(d => d.AppointmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DoctorRef__Appoi__2FCF1A8A");
+                .HasConstraintName("FK__DoctorRef__Appoi__74AE54BC");
 
             entity.HasOne(d => d.Patient).WithMany(p => p.DoctorReferrals)
                 .HasForeignKey(d => d.PatientId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DoctorRef__Patie__30C33EC3");
+                .HasConstraintName("FK__DoctorRef__Patie__75A278F5");
 
             entity.HasOne(d => d.ReferredDoctor).WithMany(p => p.DoctorReferrals)
                 .HasForeignKey(d => d.ReferredDoctorId)
-                .HasConstraintName("FK__DoctorRef__Refer__32AB8735");
+                .HasConstraintName("FK__DoctorRef__Refer__72C60C4A");
 
             entity.HasOne(d => d.ReferringDoctor).WithMany(p => p.DoctorReferrals)
                 .HasForeignKey(d => d.ReferringDoctorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DoctorRef__Refer__31B762FC");
+                .HasConstraintName("FK__DoctorRef__Refer__71D1E811");
 
             entity.HasOne(d => d.Specialization).WithMany(p => p.DoctorReferrals)
                 .HasForeignKey(d => d.SpecializationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DoctorRef__Speci__339FAB6E");
+                .HasConstraintName("FK__DoctorRef__Speci__73BA3083");
         });
 
         modelBuilder.Entity<LabReport>(entity =>
         {
-            entity.HasKey(e => e.LabReportId).HasName("PK__LabRepor__971DB70DB78256CC");
+            entity.HasKey(e => e.LabReportId).HasName("PK__LabRepor__971DB70DB2AD3094");
 
             entity.ToTable("LabReport");
 
@@ -178,20 +174,20 @@ public partial class CmsCamp6finalContext : DbContext
 
             entity.HasOne(d => d.Appointment).WithMany(p => p.LabReports)
                 .HasForeignKey(d => d.AppointmentId)
-                .HasConstraintName("FK__LabReport__Appoi__01142BA1");
+                .HasConstraintName("FK__LabReport__Appoi__797309D9");
 
             entity.HasOne(d => d.LabTest).WithMany(p => p.LabReports)
                 .HasForeignKey(d => d.LabTestId)
-                .HasConstraintName("FK__LabReport__LabTe__00200768");
+                .HasConstraintName("FK__LabReport__LabTe__787EE5A0");
 
             entity.HasOne(d => d.LabTestPrescription).WithMany(p => p.LabReports)
                 .HasForeignKey(d => d.LabTestPrescriptionId)
-                .HasConstraintName("FK__LabReport__LabTe__02084FDA");
+                .HasConstraintName("FK__LabReport__LabTe__7A672E12");
         });
 
         modelBuilder.Entity<LabTest>(entity =>
         {
-            entity.HasKey(e => e.LabTestId).HasName("PK__LabTest__64D339251F35E92F");
+            entity.HasKey(e => e.LabTestId).HasName("PK__LabTest__64D33925893B34D9");
 
             entity.ToTable("LabTest");
 
@@ -212,12 +208,12 @@ public partial class CmsCamp6finalContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.LabTests)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__LabTest__Categor__37703C52");
+                .HasConstraintName("FK__LabTest__Categor__4BAC3F29");
         });
 
         modelBuilder.Entity<LabTestCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__LabTestC__19093A0B89EEAFAA");
+            entity.HasKey(e => e.CategoryId).HasName("PK__LabTestC__19093A0B52C3DD56");
 
             entity.ToTable("LabTestCategory");
 
@@ -228,7 +224,7 @@ public partial class CmsCamp6finalContext : DbContext
 
         modelBuilder.Entity<LabTestPrescription>(entity =>
         {
-            entity.HasKey(e => e.LabTestPrescriptionId).HasName("PK__LabTestP__7E8F64EE5199411A");
+            entity.HasKey(e => e.LabTestPrescriptionId).HasName("PK__LabTestP__7E8F64EEA31FE60C");
 
             entity.ToTable("LabTestPrescription");
 
@@ -237,22 +233,22 @@ public partial class CmsCamp6finalContext : DbContext
             entity.HasOne(d => d.Appointment).WithMany(p => p.LabTestPrescriptions)
                 .HasForeignKey(d => d.AppointmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__LabTestPr__Appoi__3864608B");
+                .HasConstraintName("FK__LabTestPr__Appoi__6C190EBB");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.LabTestPrescriptions)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__LabTestPr__Creat__395884C4");
+                .HasConstraintName("FK__LabTestPr__Creat__6E01572D");
 
             entity.HasOne(d => d.LabTest).WithMany(p => p.LabTestPrescriptions)
                 .HasForeignKey(d => d.LabTestId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__LabTestPr__LabTe__3A4CA8FD");
+                .HasConstraintName("FK__LabTestPr__LabTe__6D0D32F4");
         });
 
         modelBuilder.Entity<MainPrescription>(entity =>
         {
-            entity.HasKey(e => e.MainPrescriptionId).HasName("PK__MainPres__68AF25A2175B004F");
+            entity.HasKey(e => e.MainPrescriptionId).HasName("PK__MainPres__68AF25A217937E57");
 
             entity.ToTable("MainPrescription");
 
@@ -261,34 +257,36 @@ public partial class CmsCamp6finalContext : DbContext
             entity.HasOne(d => d.Appointment).WithMany(p => p.MainPrescriptions)
                 .HasForeignKey(d => d.AppointmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MainPresc__Appoi__3B40CD36");
+                .HasConstraintName("FK__MainPresc__Appoi__5BE2A6F2");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.MainPrescriptions)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MainPresc__Creat__3C34F16F");
+                .HasConstraintName("FK__MainPresc__Creat__5CD6CB2B");
         });
 
         modelBuilder.Entity<Medicine>(entity =>
         {
-            entity.HasKey(e => e.MedicineId).HasName("PK__Medicine__4F21289056601AA3");
+            entity.HasKey(e => e.MedicineId).HasName("PK__Medicine__4F212890287024CA");
 
             entity.ToTable("Medicine");
 
+            entity.Property(e => e.Cost)
+                .HasMaxLength(50)
+                .HasColumnName("cost");
             entity.Property(e => e.ExpiryDate).HasColumnType("date");
             entity.Property(e => e.ManufacturingDate).HasColumnType("date");
             entity.Property(e => e.MedicineName).HasMaxLength(100);
-            entity.Property(e => e.Unit).HasMaxLength(50);
 
             entity.HasOne(d => d.MedicineCategory).WithMany(p => p.Medicines)
                 .HasForeignKey(d => d.MedicineCategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Medicine__Medici__3D2915A8");
+                .HasConstraintName("FK__Medicine__Medici__619B8048");
         });
 
         modelBuilder.Entity<MedicineCategory>(entity =>
         {
-            entity.HasKey(e => e.MedicineCategoryId).HasName("PK__Medicine__28C9BE8A3BCCCCF6");
+            entity.HasKey(e => e.MedicineCategoryId).HasName("PK__Medicine__28C9BE8A343391DF");
 
             entity.ToTable("MedicineCategory");
 
@@ -297,19 +295,19 @@ public partial class CmsCamp6finalContext : DbContext
 
         modelBuilder.Entity<MedicineInventory>(entity =>
         {
-            entity.HasKey(e => e.MedicineStockId).HasName("PK__Medicine__FA952718B3A797A4");
+            entity.HasKey(e => e.MedicineStockId).HasName("PK__Medicine__FA952718524D0629");
 
             entity.ToTable("MedicineInventory");
 
             entity.HasOne(d => d.Medicine).WithMany(p => p.MedicineInventories)
                 .HasForeignKey(d => d.MedicineId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MedicineI__Medic__3E1D39E1");
+                .HasConstraintName("FK__MedicineI__Medic__6477ECF3");
         });
 
         modelBuilder.Entity<MedicinePrescription>(entity =>
         {
-            entity.HasKey(e => e.MedicinePrescriptionId).HasName("PK__Medicine__4057AFDE3770A1FD");
+            entity.HasKey(e => e.MedicinePrescriptionId).HasName("PK__Medicine__4057AFDE84BD7838");
 
             entity.ToTable("MedicinePrescription");
 
@@ -322,22 +320,22 @@ public partial class CmsCamp6finalContext : DbContext
             entity.HasOne(d => d.Appointment).WithMany(p => p.MedicinePrescriptions)
                 .HasForeignKey(d => d.AppointmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MedicineP__Appoi__3F115E1A");
+                .HasConstraintName("FK__MedicineP__Appoi__6754599E");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.MedicinePrescriptions)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MedicineP__Creat__40058253");
+                .HasConstraintName("FK__MedicineP__Creat__693CA210");
 
             entity.HasOne(d => d.Medicine).WithMany(p => p.MedicinePrescriptions)
                 .HasForeignKey(d => d.MedicineId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MedicineP__Medic__40F9A68C");
+                .HasConstraintName("FK__MedicineP__Medic__68487DD7");
         });
 
         modelBuilder.Entity<NewAppointment>(entity =>
         {
-            entity.HasKey(e => e.AppointmentId).HasName("PK__NewAppoi__8ECDFCC29A555562");
+            entity.HasKey(e => e.AppointmentId).HasName("PK__NewAppoi__8ECDFCC26060CF7F");
 
             entity.ToTable("NewAppointment");
 
@@ -346,34 +344,29 @@ public partial class CmsCamp6finalContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date");
 
-            entity.HasOne(d => d.DailyAppointment).WithMany(p => p.NewAppointments)
-                .HasForeignKey(d => d.DailyAppointmentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__NewAppoin__Daily__41EDCAC5");
+            entity.HasOne(d => d.Department).WithMany(p => p.NewAppointments)
+                .HasForeignKey(d => d.DepartmentId)
+                .HasConstraintName("FK__NewAppoin__Depar__5535A963");
 
             entity.HasOne(d => d.DocAvl).WithMany(p => p.NewAppointments)
                 .HasForeignKey(d => d.DocAvlId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__NewAppoin__DocAv__42E1EEFE");
+                .HasConstraintName("FK__NewAppoin__DocAv__52593CB8");
 
-            entity.HasOne(d => d.Doc).WithMany(p => p.NewAppointments)
-                .HasForeignKey(d => d.DocId)
+            entity.HasOne(d => d.Doctor).WithMany(p => p.NewAppointments)
+                .HasForeignKey(d => d.DoctorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__NewAppoin__DocId__43D61337");
+                .HasConstraintName("FK__NewAppoin__Docto__5441852A");
 
             entity.HasOne(d => d.Patient).WithMany(p => p.NewAppointments)
                 .HasForeignKey(d => d.PatientId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__NewAppoin__Patie__44CA3770");
-
-            entity.HasOne(d => d.Specialization).WithMany(p => p.NewAppointments)
-                .HasForeignKey(d => d.SpecializationId)
-                .HasConstraintName("FK__NewAppoin__Speci__45BE5BA9");
+                .HasConstraintName("FK__NewAppoin__Patie__534D60F1");
         });
 
         modelBuilder.Entity<Patient>(entity =>
         {
-            entity.HasKey(e => e.PatientId).HasName("PK__Patient__970EC366343A16AD");
+            entity.HasKey(e => e.PatientId).HasName("PK__Patient__970EC366AAEC901D");
 
             entity.ToTable("Patient");
 
@@ -393,7 +386,7 @@ public partial class CmsCamp6finalContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1A315F3EA6");
+            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1AA1642534");
 
             entity.ToTable("Role");
 
@@ -404,7 +397,7 @@ public partial class CmsCamp6finalContext : DbContext
 
         modelBuilder.Entity<Specialization>(entity =>
         {
-            entity.HasKey(e => e.SpecializationId).HasName("PK__Speciali__5809D86F30DA4A61");
+            entity.HasKey(e => e.SpecializationId).HasName("PK__Speciali__5809D86F4C122476");
 
             entity.ToTable("Specialization");
 
@@ -415,7 +408,7 @@ public partial class CmsCamp6finalContext : DbContext
 
         modelBuilder.Entity<Staff>(entity =>
         {
-            entity.HasKey(e => e.StaffId).HasName("PK__Staff__96D4AB17B8C2E4A4");
+            entity.HasKey(e => e.StaffId).HasName("PK__Staff__96D4AB1700FB63FC");
 
             entity.Property(e => e.Address)
                 .HasMaxLength(30)
@@ -446,24 +439,9 @@ public partial class CmsCamp6finalContext : DbContext
                 .HasConstraintName("FK__Staff__Departmen__3D5E1FD2");
         });
 
-        modelBuilder.Entity<TimeSlot>(entity =>
-        {
-            entity.HasKey(e => e.TimeSlotId).HasName("PK__TimeSlot__41CC1F32E98256CB");
-
-            entity.Property(e => e.TimeSlot1)
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("TimeSlot");
-
-            entity.HasOne(d => d.Wk).WithMany(p => p.TimeSlots)
-                .HasForeignKey(d => d.WkId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__TimeSlots__WkId__47A6A41B");
-        });
-
         modelBuilder.Entity<UserRegistration>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__UserRegi__1788CC4CFE015A16");
+            entity.HasKey(e => e.UserId).HasName("PK__UserRegi__1788CC4C960A576C");
 
             entity.ToTable("UserRegistration");
 
@@ -483,15 +461,6 @@ public partial class CmsCamp6finalContext : DbContext
                 .HasForeignKey(d => d.StaffId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__UserRegis__Staff__4316F928");
-        });
-
-        modelBuilder.Entity<Weekday>(entity =>
-        {
-            entity.HasKey(e => e.WkId).HasName("PK__Weekdays__8065C7DDC32FE907");
-
-            entity.Property(e => e.Day)
-                .HasMaxLength(10)
-                .IsUnicode(false);
         });
 
         OnModelCreatingPartial(modelBuilder);
