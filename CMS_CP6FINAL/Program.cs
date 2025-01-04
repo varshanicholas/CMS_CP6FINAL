@@ -27,14 +27,26 @@ namespace CMS_CP6FINAL
              });
             //connection string as Middleware
 
-            builder.Services.AddDbContext<CmsCamp6finalContext>(
-                options => options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
+            // Add services to the container.
+            builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
+            builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
+            builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
+            builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
+
+
+
+            builder.Services.AddDbContext<CmsCamp6finalContext>(options =>
+                     options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
 
             builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
 
             //swagger registration
 
             builder.Services.AddSwaggerGen();
+
+            
+
+
 
             var app = builder.Build();
 
