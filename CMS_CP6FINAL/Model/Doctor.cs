@@ -18,4 +18,23 @@ public partial class Doctor
     public virtual ICollection<NewAppointment> NewAppointments { get; set; } = new List<NewAppointment>();
 
     public virtual Staff Staff { get; set; } = null!;
+
+
+    // New properties for navigation
+    public int SpecializationId
+    {
+        get
+        {
+            return Staff?.Department?.SpecializationId ?? 0;
+        }
+    }
+    public virtual Specialization Specialization
+    {
+        get
+        {
+            return Staff?.Department?.Specialization;
+        }
+    }
 }
+
+
