@@ -11,6 +11,8 @@ public partial class Department
 
     public int? SpecializationId { get; set; }
 
+    public virtual ICollection<NewAppointment> NewAppointments { get; set; } = new List<NewAppointment>();
+
     public virtual Specialization? Specialization { get; set; }
 
     public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();

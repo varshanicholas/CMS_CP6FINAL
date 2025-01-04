@@ -7,23 +7,17 @@ public partial class DoctorAvailability
 {
     public int DocAvlId { get; set; }
 
-    public int DocId { get; set; }
+    public int DoctorId { get; set; }
 
-    public int WeekId { get; set; }
+    public string? Weekdays { get; set; }
 
-    public int TimeSlotId { get; set; }
+    public string? MorningSession { get; set; }
 
-    public TimeSpan StartTime { get; set; }
-
-    public TimeSpan EndTime { get; set; }
+    public string? EveningSession { get; set; }
 
     public virtual ICollection<DailyAppointmentAvailability> DailyAppointmentAvailabilities { get; set; } = new List<DailyAppointmentAvailability>();
 
-    public virtual Doctor Doc { get; set; } = null!;
+    public virtual Doctor Doctor { get; set; } = null!;
 
     public virtual ICollection<NewAppointment> NewAppointments { get; set; } = new List<NewAppointment>();
-
-    public virtual TimeSlot TimeSlot { get; set; } = null!;
-
-    public virtual Weekday Week { get; set; } = null!;
 }
