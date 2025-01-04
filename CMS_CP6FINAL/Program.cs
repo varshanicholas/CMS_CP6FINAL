@@ -1,4 +1,5 @@
 using CMS_CP6FINAL.Model;
+
 using CMS_CP6FINAL.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,10 +29,7 @@ namespace CMS_CP6FINAL
             //connection string as Middleware
 
             // Add services to the container.
-            builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
-            builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
-            builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
-            builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
+          
 
 
 
@@ -39,6 +37,10 @@ namespace CMS_CP6FINAL
                      options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
 
             builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
+            builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
+            // builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
+            // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
+            builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
 
             //swagger registration
 
