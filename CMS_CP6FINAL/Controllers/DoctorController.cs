@@ -15,15 +15,15 @@ public class DoctorController : ControllerBase
         _labTestRepository = labTestRepository;
     }
 
-    [HttpGet("DailyLabTests")]
-    public async Task<IActionResult> GetDailyLabTests([FromQuery] DateTime date)
-    {
-        if (date == default)
-        {
-            date = DateTime.Today;
-        }
+    //[HttpGet("DailyLabTests")]
+    //public async Task<IActionResult> GetDailyLabTests([FromQuery] DateTime date)
+    //{
+    //    if (date == default)
+    //    {
+    //        date = DateTime.Today;
+    //    }
 
-        var labTests = await _labTestRepository.GetDailyLabTestsAsync(date);
-        return Ok(labTests);
-    }
+    //    var labTests = await _labTestRepository.GetDailyLabTestsAsync(date);
+    //    return Ok(labTests);
+    //}
 }
