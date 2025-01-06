@@ -5,6 +5,9 @@ namespace CMS_CP6FINAL.Model
 {
     public partial class Staff
     {
+
+
+        public Staff() { Doctors = new HashSet<Doctor>(); }
         public int StaffId { get; set; }
 
         public string StaffName { get; set; } = null!;
@@ -21,15 +24,15 @@ namespace CMS_CP6FINAL.Model
 
         public string Qualification { get; set; } = null!;
 
-        public int? DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
 
         public DateTime CreatedDate { get; set; }
-
-        public virtual Department Department { get; set; }
+        
+        public virtual Department? Department { get; set; }
         [JsonIgnore]
         public virtual ICollection<DoctorReferral>? DoctorReferrals { get; set; } = null;
         [JsonIgnore]
-        public virtual ICollection<Doctor>? Doctors { get; set; } = null;
+        public virtual ICollection<Doctor> Doctors { get; set; } = null;
         [JsonIgnore]
         public virtual ICollection<LabTestPrescription>? LabTestPrescriptions { get; set; } = null;
         [JsonIgnore]
