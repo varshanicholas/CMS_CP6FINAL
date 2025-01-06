@@ -22,7 +22,7 @@ namespace CMS_CP6FINAL.Repository
 
                 var appointments = await _context.NewAppointments
                     .Include(a => a.Patient)
-                    .Include(a => a.Specialization)
+                    .Include(a => a.Department)
                     .Where(a => a.DocId == doctorId && a.AppointmentDate.Date == today)
                     .OrderBy(a => a.TokenNumber)
                     .Select(a => new StartDiagnosysViewmodel
@@ -52,7 +52,7 @@ namespace CMS_CP6FINAL.Repository
         {
             var query = _context.NewAppointments
                 .Include(a => a.Patient)
-                .Include(a => a.Specialization)
+                .Include(a => a.Department)
                 .Where(a =>
                     (string.IsNullOrEmpty(patientName) || a.Patient.PatientName.Contains(patientName)) &&
                     (!appointmentId.HasValue || a.AppointmentId == appointmentId.Value) &&
@@ -67,7 +67,7 @@ namespace CMS_CP6FINAL.Repository
                     Gender = a.Patient.Gender,
                     BloodGroup = a.Patient.BloodGroup,
                     PhoneNumber = a.Patient.PhoneNumber,
-                    SpecializationName = a.Specialization.SpecializationName
+                    SpecializationName = a.Department.DepartmentName
                 });
 
             return query.ToList();

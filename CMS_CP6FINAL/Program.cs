@@ -41,6 +41,8 @@ namespace CMS_CP6FINAL
                      options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
 
             builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
+
+            //Doctor
             builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
             // builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
             // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
