@@ -11,30 +11,17 @@ public partial class Doctor
 
     public decimal ConsultationFee { get; set; }
 
+    public int SpecializationId { get; set; }
+
+    public bool IsActive { get; set; }
+
     public virtual ICollection<DoctorAvailability> DoctorAvailabilities { get; set; } = new List<DoctorAvailability>();
 
     public virtual ICollection<DoctorReferral> DoctorReferrals { get; set; } = new List<DoctorReferral>();
 
     public virtual ICollection<NewAppointment> NewAppointments { get; set; } = new List<NewAppointment>();
 
+    public virtual Specialization Specialization { get; set; } = null!;
+
     public virtual Staff Staff { get; set; } = null!;
-
-
-    // New properties for navigation
-    public int SpecializationId
-    {
-        get
-        {
-            return Staff?.Department?.SpecializationId ?? 0;
-        }
-    }
-    public virtual Specialization Specialization
-    {
-        get
-        {
-            return Staff?.Department?.Specialization;
-        }
-    }
 }
-
-

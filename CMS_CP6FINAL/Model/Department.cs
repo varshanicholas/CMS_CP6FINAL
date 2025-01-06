@@ -9,15 +9,9 @@ public partial class Department
 
     public string DepartmentName { get; set; } = null!;
 
-    public int SpecializationId { get; set; }
-
-
     public virtual ICollection<NewAppointment> NewAppointments { get; set; } = new List<NewAppointment>();
 
-    public virtual Specialization? Specialization { get; set; }
+    public virtual ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
 
-
-    [System.Text.Json.Serialization.JsonIgnore] 
     public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
 }
-

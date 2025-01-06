@@ -22,4 +22,6 @@ public partial class MainPrescription
     public virtual NewAppointment Appointment { get; set; } = null!;
 
     public virtual Staff CreatedByNavigation { get; set; } = null!;
+
+    public virtual ICollection<MedicinePrescription> MedicinePrescriptions { get; set; } = new List<MedicinePrescription>();
 }

@@ -40,15 +40,26 @@ namespace CMS_CP6FINAL.Controllers
         [HttpGet("byDoctor/{doctorId}")]
         public async Task<ActionResult<IEnumerable<DoctorAvailability>>> GetDoctorsAvailabilityByDoctorId(int doctorId)
         {
-            var availabilities = await _repository.GetDoctorAvailabilityByDoctorId(doctorId);
+            var availability = await _repository.GetDoctorAvailabilityByDoctorId(doctorId);
 
-            if (availabilities == null || !availabilities.Any())
+            if (availability == null || !availability.Any())
             {
-                return NotFound(new { message = $"No availability found for Doctor ID: {doctorId}" });
+                return NotFound(new { Message = "Doctor availability not found." });
             }
 
-            return Ok(availabilities);
+            var response = availability.Select(da => new
+            {
+                da.DocAvlId,
+                da.DoctorId,
+               
+                da.Weekdays,
+                da.MorningSession,
+                da.EveningSession
+            });
+
+            return Ok(response);
         }
+    
        
 
         //[HttpGet("byDepartmentandDate/{departmentId}/{date}")]

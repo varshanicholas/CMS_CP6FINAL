@@ -22,7 +22,7 @@ namespace CMS_CP6FINAL.Controllers
             }
 
 
-        [HttpGet]
+        [HttpGet("Patientslist")]
         //[Authorize(AuthenticationSchemes  ="Bearer")]
         public async Task<ActionResult<IEnumerable<Patient >>> GetAllPatients()
         {
@@ -36,7 +36,7 @@ namespace CMS_CP6FINAL.Controllers
         }
 
         // Search by ID
-        [HttpGet("ById/{id}")]
+        [HttpGet("PatientById/{id}")]
         public async Task<ActionResult<Patient>> GetPatientsById(int id)
         {
             var pat = await _repository.GetPatientById(id);
@@ -49,7 +49,7 @@ namespace CMS_CP6FINAL.Controllers
         }
 
         // Search by Phone Number
-        [HttpGet("ByPhone/{ph}")]
+        [HttpGet("PatientsByPhone/{ph}")]
         public async Task<ActionResult<Patient>> GetPatientsByphno(string ph)
         {
             var pat = await _repository.GetPatientByPhoneNumber(ph);
@@ -65,7 +65,7 @@ namespace CMS_CP6FINAL.Controllers
 
         #region -4 insert an patient-return patient record
 
-        [HttpPost]
+        [HttpPost("InsertPatient")]
         public async Task<ActionResult<Patient >> InsertPatientsReturnRecord (Patient pat)
         {
             if (ModelState.IsValid)
@@ -92,7 +92,7 @@ namespace CMS_CP6FINAL.Controllers
 
         #region 6 Update an patient
 
-        [HttpPut("{id}")]
+        [HttpPut("updatepatient/{id}")]
         public async Task<ActionResult<Patient>> UpdatePatientReturnRecord(int id, Patient  pat)
         {
             if (ModelState.IsValid)
@@ -118,7 +118,7 @@ namespace CMS_CP6FINAL.Controllers
         #endregion
 
         #region 7 delete an patient
-        [HttpDelete("{id}")]
+        [HttpDelete("patientdelete/{id}")]
         public IActionResult DeletePatient(int id)
         {
             try
