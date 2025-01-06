@@ -31,9 +31,9 @@ public partial class NewAppointment
 
     public virtual Department? Department { get; set; }
 
-    public virtual DoctorAvailability DocAvl { get; set; } = null!;
+    public virtual DoctorAvailability? DocAvl { get; set; } = null!;
 
-    public virtual Doctor Doctor { get; set; } = null!;
+    public virtual Doctor? Doctor { get; set; } = null!;
 
     public virtual ICollection<DoctorReferral> DoctorReferrals { get; set; } = new List<DoctorReferral>();
 
@@ -45,5 +45,5 @@ public partial class NewAppointment
 
     public virtual ICollection<MedicinePrescription> MedicinePrescriptions { get; set; } = new List<MedicinePrescription>();
 
-    public virtual Patient Patient { get; set; } = null!;
+    public virtual Patient? Patient { get; set; } = null!;
 }

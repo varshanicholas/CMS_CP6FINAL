@@ -146,6 +146,7 @@ namespace CMS_CP6FINAL.Repository
                 existingPatient.Address = pat.Address;
                 existingPatient.Email = pat.Email;
                 existingPatient.CreatedDate = pat.CreatedDate;
+                existingPatient.IsActive = pat.IsActive;
 
 
                 //save changes to the database
@@ -407,18 +408,10 @@ namespace CMS_CP6FINAL.Repository
         {
             try
             {
-                if (_context.DoctorAvailabilities != null)
-                {
-                    // Corrected the property names in the Include statements
-                    return await _context.DoctorAvailabilities
-                        .Where(d => d.DoctorId == doctorId)
-                        .Include(d => d.Doctor) // Including the related Doctor entity
-                        .Include(d => d.DailyAppointmentAvailabilities) // Corrected for DailyAppointments
-                        .Include(d => d.NewAppointments) // Corrected for NewAppointments
-                        .ToListAsync();
-                }
-
-                return new List<DoctorAvailability>();
+                return await _context.DoctorAvailabilities
+                .Include(da => da.Doctor) // Include Doctor details
+                .Where(da => da.DoctorId == doctorId)
+                .ToListAsync();
             }
             catch (Exception ex)
             {

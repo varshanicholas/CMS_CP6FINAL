@@ -21,6 +21,20 @@ namespace CMS_CP6FINAL
 
             builder.Services.AddControllers();
 
+            //CORS -ENABLE
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigin", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+
+                });
+            });
+
             //3-json format
             builder.Services.AddControllersWithViews()
              .AddJsonOptions(
@@ -46,17 +60,22 @@ namespace CMS_CP6FINAL
 <<<<<<< HEAD
 =======
             builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
-            builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
+          //  builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
             // builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
             // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
             builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
 
+<<<<<<< HEAD
 
 >>>>>>> 81d8d89bb65215eaa82ed75f09d12a5529332f40
             //ADMINS
             // Register Repository and Service layer
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IStaffService, StaffService>();
+=======
+//builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+//builder.Services.AddScoped<IStaffService, StaffService>();
+>>>>>>> 4e7aadf4c07fde4730c818842b21554d1f7551ed
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -69,12 +88,12 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 
             builder.Services.AddSwaggerGen();
 
-            
-
-
 
             var app = builder.Build();
 
+            //enable cors
+
+            app.UseCors("AllowAllOrigin");
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
