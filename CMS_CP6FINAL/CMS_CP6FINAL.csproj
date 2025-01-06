@@ -27,6 +27,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 81d8d89bb65215eaa82ed75f09d12a5529332f40
   <ItemGroup>
     <Folder Include="ViewModel\" />
     <Folder Include="Repository\" />

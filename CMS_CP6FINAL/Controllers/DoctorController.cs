@@ -15,6 +15,7 @@
 //        _labTestRepository = labTestRepository;
 //    }
 
+<<<<<<< HEAD
 //    [HttpGet("DailyLabTests")]
 //    public async Task<IActionResult> GetDailyLabTests([FromQuery] DateTime date)
 //    {
@@ -27,3 +28,17 @@
 //        return Ok(labTests);
 //    }
 //}
+=======
+    //[HttpGet("DailyLabTests")]
+    //public async Task<IActionResult> GetDailyLabTests([FromQuery] DateTime date)
+    //{
+    //    if (date == default)
+    //    {
+    //        date = DateTime.Today;
+    //    }
+
+    //    var labTests = await _labTestRepository.GetDailyLabTestsAsync(date);
+    //    return Ok(labTests);
+    //}
+}
+>>>>>>> 81d8d89bb65215eaa82ed75f09d12a5529332f40
