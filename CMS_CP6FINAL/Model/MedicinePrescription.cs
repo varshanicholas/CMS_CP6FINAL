@@ -9,6 +9,8 @@ public partial class MedicinePrescription
 
     public int AppointmentId { get; set; }
 
+    public int MainPrescriptionId { get; set; }
+
     public int MedicineId { get; set; }
 
     public string Quantity { get; set; } = null!;
@@ -29,6 +31,7 @@ public partial class MedicinePrescription
 
     public virtual Staff CreatedByNavigation { get; set; } = null!;
 
-    public virtual Medicine Medicine { get; set; } = null!;
+    public virtual MainPrescription MainPrescription { get; set; } = null!;
 
+    public virtual Medicine Medicine { get; set; } = null!;
 }
