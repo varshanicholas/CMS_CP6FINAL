@@ -20,6 +20,25 @@
 //            {
 //                var today = DateTime.Today;
 
+<<<<<<< HEAD
+                var appointments = await _context.NewAppointments
+                    .Include(a => a.Patient)
+                    .Include(a => a.Department)
+                    .Where(a => a.DocId == doctorId && a.AppointmentDate.Date == today)
+                    .OrderBy(a => a.TokenNumber)
+                    .Select(a => new StartDiagnosysViewmodel
+                    {
+                        AppointmentId = a.AppointmentId,
+                        TokenNumber = a.TokenNumber,
+                        AppointmentDate = a.AppointmentDate,
+                        PatientName = a.Patient.PatientName,
+                        Gender = a.Patient.Gender,
+                        BloodGroup = a.Patient.BloodGroup,
+                        PhoneNumber = a.Patient.PhoneNumber,
+                        SpecializationName = a.Specialization.SpecializationName
+                    })
+                    .ToListAsync();
+=======
 //                var appointments = await _context.NewAppointments
 //                    .Include(a => a.Patient)
 //                    .Include(a => a.Specialization)
@@ -37,6 +56,7 @@
 //                        SpecializationName = a.Specialization.SpecializationName
 //                    })
 //                    .ToListAsync();
+>>>>>>> origin/master
 
 //                return appointments;
 //            }
@@ -47,6 +67,35 @@
 //            }
 //        }
 
+<<<<<<< HEAD
+        // Search for a patient
+        public IEnumerable<StartDiagnosysViewmodel> SearchPatient(string? patientName, int? appointmentId, int? tokenNumber, string? phoneNumber)
+        {
+            var query = _context.NewAppointments
+                .Include(a => a.Patient)
+                .Include(a => a.Department)
+                .Where(a =>
+                    (string.IsNullOrEmpty(patientName) || a.Patient.PatientName.Contains(patientName)) &&
+                    (!appointmentId.HasValue || a.AppointmentId == appointmentId.Value) &&
+                    (!tokenNumber.HasValue || a.TokenNumber == tokenNumber.Value) &&
+                    (string.IsNullOrEmpty(phoneNumber) || a.Patient.PhoneNumber.Contains(phoneNumber)))
+                .Select(a => new StartDiagnosysViewmodel
+                {
+                    AppointmentId = a.AppointmentId,
+                    AppointmentDate = a.AppointmentDate,
+                    TokenNumber = a.TokenNumber,
+                    PatientName = a.Patient.PatientName,
+                    Gender = a.Patient.Gender,
+                    BloodGroup = a.Patient.BloodGroup,
+                    PhoneNumber = a.Patient.PhoneNumber,
+                    SpecializationName = a.Department.DepartmentName
+                });
+
+            return query.ToList();
+        }
+    }
+}
+=======
 //        // Search for a patient
 //        public IEnumerable<StartDiagnosysViewmodel> SearchPatient(string? patientName, int? appointmentId, int? tokenNumber, string? phoneNumber)
 //        {
@@ -74,3 +123,4 @@
 //        }
 //    }
 //}
+>>>>>>> origin/master

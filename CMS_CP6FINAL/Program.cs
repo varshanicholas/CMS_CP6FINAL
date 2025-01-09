@@ -60,7 +60,13 @@ namespace CMS_CP6FINAL
 <<<<<<< HEAD
 =======
             builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
+<<<<<<< HEAD
+
+            //Doctor
+            builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
+=======
           //  builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
+>>>>>>> origin/master
             // builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
             // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
             builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
