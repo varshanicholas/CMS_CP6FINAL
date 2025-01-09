@@ -1,4 +1,5 @@
 using CMS_CP6FINAL.Model;
+using CMS_CP6FINAL.Repository; // Add namespace for repositories
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS_CP6FINAL
@@ -9,34 +10,35 @@ namespace CMS_CP6FINAL
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
+            // Add services to the container
             builder.Services.AddControllers();
 
-            //3-json format
+            // Configure JSON options
             builder.Services.AddControllersWithViews()
-             .AddJsonOptions(
-             options =>
-             {
-                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                 options.JsonSerializerOptions.ReferenceHandler =
-                 System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-                 options.JsonSerializerOptions.DefaultIgnoreCondition =
-                 System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
-                 options.JsonSerializerOptions.WriteIndented = true;
-             });
-            //connection string as Middleware
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null; // Use PascalCase for property names
+                    options.JsonSerializerOptions.ReferenceHandler =
+                        System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles; // Handle cyclic references
+                    options.JsonSerializerOptions.DefaultIgnoreCondition =
+                        System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull; // Ignore null values
+                    options.JsonSerializerOptions.WriteIndented = true; // Format JSON for better readability
+                });
 
-            builder.Services.AddDbContext<CmsCamp6finalContext>(
-                options => options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
+            // Configure Entity Framework Core with SQL Server
+            builder.Services.AddDbContext<CmsCamp6finalContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // Register custom repository in DI container
+            builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
+
+            // Configure Swagger
             builder.Services.AddEndpointsApiExplorer();
-            //swagger registration
-
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
+            // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -45,9 +47,8 @@ namespace CMS_CP6FINAL
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
+            app.UseAuthentication(); // Ensure authentication is configured
+            app.UseAuthorization(); // Ensure authorization policies are set up
 
             app.MapControllers();
 

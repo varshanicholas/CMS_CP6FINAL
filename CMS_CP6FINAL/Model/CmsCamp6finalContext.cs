@@ -6,6 +6,8 @@ namespace CMS_CP6FINAL.Model;
 
 public partial class CmsCamp6finalContext : DbContext
 {
+
+
     public CmsCamp6finalContext()
     {
     }
@@ -14,6 +16,7 @@ public partial class CmsCamp6finalContext : DbContext
         : base(options)
     {
     }
+
 
     public virtual DbSet<DailyAppointmentAvailability> DailyAppointmentAvailabilities { get; set; }
 
@@ -34,6 +37,7 @@ public partial class CmsCamp6finalContext : DbContext
     public virtual DbSet<LabTestPrescription> LabTestPrescriptions { get; set; }
 
     public virtual DbSet<MainPrescription> MainPrescriptions { get; set; }
+
 
     public virtual DbSet<Medicine> Medicines { get; set; }
 
@@ -499,3 +503,4 @@ public partial class CmsCamp6finalContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+
