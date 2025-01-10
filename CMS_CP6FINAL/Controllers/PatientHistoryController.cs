@@ -1,35 +1,33 @@
-﻿using CMS_CP6FINAL.Repository;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using CMS_CP6FINAL.Repository;
+using CMS_CP6FINAL.Model;
+using CMS_CP6FINAL.Repositories;
+using CMS_CP6FINAL.ViewModel;
 
 namespace CMS_CP6FINAL.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class PatientHistoryController : ControllerBase
+    [ApiController]
+    public class PatientHistoryDoctorController : ControllerBase
     {
         private readonly IPatientHistoryDoctorRepository _repository;
 
-        public PatientHistoryController(IPatientHistoryDoctorRepository repository)
+        public PatientHistoryDoctorController(IPatientHistoryDoctorRepository repository)
         {
             _repository = repository;
         }
 
-        [HttpGet("GetPatientHistory/{patientId}")]
-        public async Task<IActionResult> GetPatientHistory(int patientId)
+        [HttpGet("PatientHistory/{patientId}")]
+        public async Task<ActionResult<List<PatientHistoryViewModel>>> GetPatientHistory(int patientId)
         {
             var history = await _repository.GetPatientHistoryAsync(patientId);
-
-            if (history == null || !history.Any())
+            if (history == null || history.Count == 0)
             {
-                return NotFound("No history found for the specified patient.");
+                return NotFound();
             }
-
             return Ok(history);
         }
-
     }
-
-
 }

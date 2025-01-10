@@ -1,29 +1,30 @@
 ﻿using CMS_CP6FINAL.Repository;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-
 
 [ApiController]
 [Route("api/[controller]")]
 public class DoctorController : ControllerBase
 {
-    private readonly IDoctorLabTestRepository _labTestRepository;
+    private readonly IDoctorLabTestRepository _doctorLabTestRepository;
 
-    public DoctorController(IDoctorLabTestRepository labTestRepository)
+    public DoctorController(IDoctorLabTestRepository doctorLabTestRepository)
     {
-        _labTestRepository = labTestRepository;
+        _doctorLabTestRepository = doctorLabTestRepository;
     }
 
-    //[HttpGet("DailyLabTests")]
-    //public async Task<IActionResult> GetDailyLabTests([FromQuery] DateTime date)
-    //{
-    //    if (date == default)
-    //    {
-    //        date = DateTime.Today;
-    //    }
+    [HttpGet("GetLabTestReports/{appointmentId}")]
+    public async Task<IActionResult> GetLabTestReports(int appointmentId)
+    {
+        var reports = await _doctorLabTestRepository.GetLabTestReportsByAppointmentIdAsync(appointmentId);
 
-    //    var labTests = await _labTestRepository.GetDailyLabTestsAsync(date);
-    //    return Ok(labTests);
-    //}
+        if (reports == null || !reports.Any())
+        {
+            return NotFound("No lab test reports found for the given appointment.");
+        }
+
+        return Ok(reports);
+    }
 }
