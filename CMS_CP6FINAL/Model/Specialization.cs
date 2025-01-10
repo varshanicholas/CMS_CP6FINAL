@@ -9,11 +9,14 @@ namespace CMS_CP6FINAL.Model
         public string SpecializationName { get; set; } = null!;
         public int? DepartmentId { get; set; } // Nullable because it might not be assigned initially
 
+
         public virtual Department? Department { get; set; }
 
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<DoctorReferral> DoctorReferrals { get; set; } = new List<DoctorReferral>();
 
+  
+  
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
     }
@@ -63,3 +66,4 @@ namespace CMS_CP6FINAL.Model
 
 //    public virtual ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
 //}
+

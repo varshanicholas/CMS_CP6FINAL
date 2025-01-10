@@ -1,4 +1,5 @@
 using CMS_CP6FINAL.Model;
+
 using CMS_CP6FINAL.Repository;
 using CMS_CP6FINAL.Service;
 using Microsoft.EntityFrameworkCore;
@@ -75,10 +76,14 @@ namespace CMS_CP6FINAL
             builder.Services.AddDbContext<CmsCamp6finalContext>(options =>
                      options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
 
+
             builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
-          //  builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
-            // builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
-            // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
+
+
+            //Doctor
+            builder.Services.AddScoped<IViewPatientAppoinmentRepository, ViewPatientAppoinmentRepository>();
+            builder.Services.AddScoped<IPatientHistoryDoctorRepository, PatientHistoryDoctorRepository>();
+             builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
             builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
 
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
@@ -117,8 +122,8 @@ builder.Services.AddScoped<ILabTestService, LabTestService>();
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
 
 
             app.MapControllers();

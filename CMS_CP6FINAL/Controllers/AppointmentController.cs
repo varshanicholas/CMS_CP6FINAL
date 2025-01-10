@@ -3,6 +3,7 @@ using CMS_CP6FINAL.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Linq;
 
 namespace CMS_CP6FINAL.Controllers
@@ -36,8 +37,11 @@ namespace CMS_CP6FINAL.Controllers
             return Ok(dep);
         }
 
-        // GET: api/DoctorAvailability/byDoctor/{doctorId}
-        [HttpGet("byDoctor/{doctorId}")]
+       
+
+
+    // GET: api/DoctorAvailability/byDoctor/{doctorId}
+    [HttpGet("byDoctor/{doctorId}")]
         public async Task<ActionResult<IEnumerable<DoctorAvailability>>> GetDoctorsAvailabilityByDoctorId(int doctorId)
         {
             var availability = await _repository.GetDoctorAvailabilityByDoctorId(doctorId);
@@ -59,8 +63,8 @@ namespace CMS_CP6FINAL.Controllers
 
             return Ok(response);
         }
-    
-       
+
+
 
         //[HttpGet("byDepartmentandDate/{departmentId}/{date}")]
         //public async Task<List<DoctorAvailability>> GetAvailableDoctorsByDepartmentAndDate(int departmentId, [FromRoute] string date)
@@ -70,11 +74,57 @@ namespace CMS_CP6FINAL.Controllers
         //    return availableDoctors.ToList();
         //}
 
+        //[HttpPost("SaveAppointment")]
+        //public async Task<NewAppointment> SaveNewAppointment(NewAppointment newAppointment)
+        //{
+        //    //return await _repository.SaveAppointment(newAppointment);
+
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        //insert a new record and return as an object named patient
+
+        //        var newAppointmentsDetails = await _repository.SaveAppointment(newAppointment);
+
+        //        if (newAppointmentsDetails != null)
+        //        {
+        //            return Ok(newAppointmentsDetails);
+        //        }
+        //        else
+        //        {
+        //            return NotFound();
+        //        }
+
+        //    }
+        //    return BadRequest();
+        //}
+
+
         [HttpPost("SaveAppointment")]
-        public async Task<NewAppointment> SaveNewAppointment(NewAppointment newAppointment)
+        public async Task<IActionResult> SaveNewAppointment(NewAppointment newAppointment)
         {
-            return await _repository.SaveAppointment(newAppointment);
+            if (ModelState.IsValid)
+            {
+                // Insert a new record and return the result
+                var newAppointmentsDetails = await _repository.SaveAppointment(newAppointment);
+
+                if (newAppointmentsDetails != null)
+                {
+                    // Return 200 OK with the new appointment details
+                    return Ok(newAppointmentsDetails);
+                }
+                else
+                {
+                    // Return 404 if no record is found
+                    return NotFound();
+                }
+            }
+
+            // Return 400 if model state is invalid
+            return BadRequest(ModelState);
         }
+
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetConsultationFeesByDoctorId(int id)
@@ -105,14 +155,14 @@ namespace CMS_CP6FINAL.Controllers
 
         [HttpGet("doctors/{departmentId}")]
       
-        public async Task<ActionResult<IEnumerable<string>>> GetDoctorsNameByDepartmentId(int departmentId)
+        public async Task<ActionResult<IEnumerable<Doctor>>> GetDoctorsNameByDepartmentId(int departmentId)
         {
             try
             {
-                var staffNames = await _repository.GetDoctorsByDepartmentId(departmentId);
+                var doctors = await _repository.GetDoctorsByDepartmentId(departmentId);
 
                 // Return 200 OK with the list of doctor names
-                return Ok(staffNames);
+                return Ok(doctors);
             }
             catch (Exception ex)
             {
@@ -123,6 +173,40 @@ namespace CMS_CP6FINAL.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
         }
+
+
+        // Add to your ReceptionistController
+
+        // Get System Date and Total Appointment Count by DoctorId
+        [HttpGet("SystemDateAndTotalAppointments/{doctorId}")]
+        public async Task<ActionResult> GetSystemDateAndTotalAppointments(int doctorId)
+        {
+            try
+            {
+                // Fetch total appointment count for the doctor
+                var totalAppointments = await _repository.GetTotalAppointmentsByDoctorId(doctorId);
+
+                // Get the system date
+                var systemDate = DateTime.Now;
+
+                // Add 1 to the total appointments count for the new token
+                var totalWithNewToken = totalAppointments + 1;
+
+                var result = new
+                {
+                    SystemDate = systemDate,
+                    TotalAppointments = totalWithNewToken
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { success = false, message = "An unexpected error occurred", error = ex.Message });
+            }
+        }
+
 
     }
 }

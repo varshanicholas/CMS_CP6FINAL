@@ -11,8 +11,9 @@ public partial class DailyAppointmentAvailability
 
     public int Token { get; set; }
 
+    #region-4
     public int AppointmentId { get; set; }
-
+    #endregion
     public virtual NewAppointment Appointment { get; set; } = null!;
 
     public virtual DoctorAvailability? DocAvl { get; set; }
