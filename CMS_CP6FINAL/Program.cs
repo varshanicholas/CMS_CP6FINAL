@@ -1,11 +1,10 @@
 using CMS_CP6FINAL.Model;
-
 using CMS_CP6FINAL.Repository;
 using CMS_CP6FINAL.Service;
-
-
-
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 
 namespace CMS_CP6FINAL
 {
@@ -31,6 +30,28 @@ namespace CMS_CP6FINAL
 
                 });
             });
+
+            
+
+            //Register a JWT authentication schema
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
+            .AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                    builder.Configuration["Jwt:Key"]))
+                };
+            });
+
+
 
             //3-json format
             builder.Services.AddControllersWithViews()
@@ -60,9 +81,20 @@ namespace CMS_CP6FINAL
             // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
             builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
 
-//builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-//builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
 
+builder.Services.AddScoped<ILoginRepository, LoginRepository>();
+            builder.Services.AddScoped<ILoginService, LoginService>();
+            
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
+   // Register custom repository in DI container
+            builder.Services.AddScoped<IMedicineRepository, MedicineRepository>();
+
+
+            builder.Services.AddScoped<ILabTestRepository, LabTestRepository>();
+builder.Services.AddScoped<ILabTestService, LabTestService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

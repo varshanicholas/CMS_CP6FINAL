@@ -15,7 +15,7 @@ public partial class UserRegistration
 
     public string Password { get; set; } = null!;
 
-    public virtual Role Role { get; set; } = null!;
-
-    public virtual Staff Staff { get; set; } = null!;
+    public virtual Role? Role { get; set; } 
+     [System.Text.Json.Serialization.JsonIgnore]
+    public virtual Staff? Staff { get; set; } = null!;
 }
