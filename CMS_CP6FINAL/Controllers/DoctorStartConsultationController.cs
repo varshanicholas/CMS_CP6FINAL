@@ -1,63 +1,53 @@
-﻿using CMS_CP6FINAL.Repository;
-using CMS_CP6FINAL.ViewModel;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Core.Types;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace CMS_CP6FINAL.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class DoctorStartConsultationController : ControllerBase
 {
+    private readonly IDoctorStartConsultationRepository _repository;
 
-
-
-    [ApiController]
-    [Route("api/[controller]")]
-    public class DoctorStartConsultationController : ControllerBase
+    public DoctorStartConsultationController(IDoctorStartConsultationRepository repository)
     {
-        private readonly IDoctorStartConsultationRepository _repository;
+        _repository = repository;
+    }
 
-        public DoctorStartConsultationController(IDoctorStartConsultationRepository repository)
+    [HttpPost("start-consultation")]
+    [AllowAnonymous]
+    public async Task<IActionResult> StartConsultation([FromBody] DoctorStartConsultationViewModel consultation)
+    {
+        
+        if (consultation == null)
+            return BadRequest("Consultation data is required.");
+
+        //Check for null or empty fields in the consultation object
+        if (string.IsNullOrWhiteSpace(consultation.Symptoms))
+                return BadRequest("Symptoms are required.");
+
+        if (string.IsNullOrWhiteSpace(consultation.Diagnosis))
+            return BadRequest("Diagnosis is required.");
+
+        if (string.IsNullOrWhiteSpace(consultation.DoctorNotes))
+            return BadRequest("Doctor notes are required.");
+
+        try
         {
-            _repository = repository;
+            //    // Get the doctor ID (createdBy) from the authenticated user
+            //var createdBy = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int createdBy = consultation.CreatedBy != 0 ? consultation.CreatedBy : 1000;
+
+            var result = await _repository.AddConsultationAsync(consultation, createdBy);
+
+            return Ok(result); // Return the same consultation object in the response
         }
-
-        //    [HttpPost]
-        //    [Route("StartConsultation")]
-        //    public async Task<IActionResult> StartConsultation([FromBody] DoctorStartConsultationViewModel model)
-        //    {
-        //        if (!ModelState.IsValid)
-        //            return BadRequest(ModelState);
-
-        //        try
-        //        {
-        //            var result = await _repository.StartConsultationAsync(model);
-        //            if (result != null)
-        //                return Ok(result);
-
-        //            return StatusCode(500, new { Message = "An error occurred while starting the consultation." });
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return StatusCode(500, new { Message = ex.Message });
-        //        }
-        //    }
-        //}
-
-        [HttpPost]
-        [Route("StartConsultation")]
-        public async Task<IActionResult> StartConsultation([FromBody] DoctorStartConsultationViewModel model)
+        catch (System.Exception ex)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            try
-            {
-                var result = await _repository.StartConsultationAsync(model);
-                return Ok(result); // Return the updated model as a response
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = ex.Message });
-            }
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+
 }
+
+

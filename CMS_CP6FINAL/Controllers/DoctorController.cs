@@ -1,44 +1,31 @@
-﻿//using CMS_CP6FINAL.Repository;
-//using Microsoft.AspNetCore.Mvc;
-//using System;
-//using System.Threading.Tasks;
+﻿using CMS_CP6FINAL.Repository;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
+[ApiController]
+[Route("api/[controller]")]
+public class DoctorController : ControllerBase
+{
+    private readonly IDoctorLabTestRepository _doctorLabTestRepository;
 
-//[ApiController]
-//[Route("api/[controller]")]
-//public class DoctorController : ControllerBase
-//{
-//    private readonly IDoctorLabTestRepository _labTestRepository;
+    public DoctorController(IDoctorLabTestRepository doctorLabTestRepository)
+    {
+        _doctorLabTestRepository = doctorLabTestRepository;
+    }
 
-//    public DoctorController(IDoctorLabTestRepository labTestRepository)
-//    {
-//        _labTestRepository = labTestRepository;
-//    }
+    [HttpGet("GetLabTestReports/{appointmentId}")]
+    public async Task<IActionResult> GetLabTestReports(int appointmentId)
+    {
+        var reports = await _doctorLabTestRepository.GetLabTestReportsByAppointmentIdAsync(appointmentId);
 
-<<<<<<< HEAD
-//    [HttpGet("DailyLabTests")]
-//    public async Task<IActionResult> GetDailyLabTests([FromQuery] DateTime date)
-//    {
-//        if (date == default)
-//        {
-//            date = DateTime.Today;
-//        }
+        if (reports == null || !reports.Any())
+        {
+            return NotFound("No lab test reports found for the given appointment.");
+        }
 
-//        var labTests = await _labTestRepository.GetDailyLabTestsAsync(date);
-//        return Ok(labTests);
-//    }
-//}
-=======
-    //[HttpGet("DailyLabTests")]
-    //public async Task<IActionResult> GetDailyLabTests([FromQuery] DateTime date)
-    //{
-    //    if (date == default)
-    //    {
-    //        date = DateTime.Today;
-    //    }
-
-    //    var labTests = await _labTestRepository.GetDailyLabTestsAsync(date);
-    //    return Ok(labTests);
-    //}
+        return Ok(reports);
+    }
 }
 >>>>>>> 81d8d89bb65215eaa82ed75f09d12a5529332f40

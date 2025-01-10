@@ -1,63 +1,48 @@
-﻿//using CMS_CP6FINAL.Repository;
-//using Microsoft.AspNetCore.Mvc;
-//using System;
-//using System.Linq;
-//using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
+using CMS_CP6FINAL.Repository;
+using CMS_CP6FINAL.ViewModel;
 
-//namespace CMS_CP6FINAL.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class ViewPatientAppoinmentController : ControllerBase
-//    {
-//        private readonly IViewPatientAppoinmentRepository _repository;
+namespace CMS_CP6FINAL.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ViewPatientAppointmentController : ControllerBase
+    {
+        private readonly IViewPatientAppoinmentRepository _repository;
 
-//        public ViewPatientAppoinmentController(IViewPatientAppoinmentRepository repository)
-//        {
-//            _repository = repository;
-//        }
+        public ViewPatientAppointmentController(IViewPatientAppoinmentRepository repository)
+        {
+            _repository = repository;
+        }
 
-//        // Endpoint to fetch today's appointments for a specific doctor
-//        [HttpGet("todaysAppointments/{doctorId}")]
-//        public async Task<IActionResult> GetTodaysAppointments(int doctorId)
-//        {
-//            try
-//            {
-//                var appointments = await _repository.GetTodaysAppointmentsAsync(doctorId);
+        // Get today's appointments for a doctor
+        [HttpGet("today/{doctorId}")]
+        public async Task<IActionResult> GetTodaysAppointments(int doctorId)
+        {
+            var appointments = await _repository.GetTodaysAppointmentsAsync(doctorId);
+            if (appointments == null || !appointments.Any())
+            {
+                return NotFound("No appointments found for today.");
+            }
+            return Ok(appointments);
+        }
 
-//                if (appointments == null || !appointments.Any())
-//                {
-//                    return NotFound(new { Message = "No appointments found for today." });
-//                }
+        [HttpGet("search")]
+        public IActionResult SearchPatient([FromQuery] string? patientName, [FromQuery] int? appointmentId, [FromQuery] int? tokenNumber, [FromQuery] string? phoneNumber)
+        {
+            Console.WriteLine($"Search Parameters: patientName={patientName}, appointmentId={appointmentId}, tokenNumber={tokenNumber}, phoneNumber={phoneNumber}");
 
-//                return Ok(appointments);
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine($"Error fetching today's appointments: {ex.Message}");
-//                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = ex.Message });
-//            }
-//        }
+            var result = _repository.SearchPatient(patientName, appointmentId, tokenNumber, phoneNumber);
 
-//        // Endpoint to search for a patient
-//        [HttpGet("search")]
-//        public IActionResult SearchPatient([FromQuery] string? patientName, [FromQuery] int? appointmentId, [FromQuery] int? tokenNumber, [FromQuery] string? phoneNumber)
-//        {
-//            try
-//            {
-//                var results = _repository.SearchPatient(patientName, appointmentId, tokenNumber, phoneNumber);
+            Console.WriteLine($"Search Results: {result.Count()} records found.");
 
-//                if (results == null || !results.Any())
-//                {
-//                    return NotFound(new { Message = "No records found matching the search criteria." });
-//                }
+            if (result == null || !result.Any())
+            {
+                return NotFound("No patients match the search criteria.");
+            }
 
-//                return Ok(results);
-//            }
-//            catch (Exception ex)
-//            {
-//                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = ex.Message });
-//            }
-//        }
-//    }
-//}
+            return Ok(result);
+        }
+
+    }
+}

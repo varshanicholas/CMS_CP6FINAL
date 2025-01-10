@@ -9,7 +9,6 @@
         public string? Gender { get; set; }
         public string? BloodGroup { get; set; }
         public string? PhoneNumber { get; set; } // Updated to match the data you want to return
-        public string? SpecializationName { get; set; } // Updated to match the data you want to return
-
+        public string? DepartmentName { get; set; } // Updated to match the data you want to return
     }
 }
