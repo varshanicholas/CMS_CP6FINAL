@@ -5,16 +5,7 @@ namespace CMS_CP6FINAL.Model;
 
 public partial class Staff
 {
-<<<<<<< HEAD
-    public partial class Staff
-    {
-
-
-        public Staff() { Doctors = new HashSet<Doctor>(); }
-        public int StaffId { get; set; }
-=======
     public int StaffId { get; set; }
->>>>>>> 4e7aadf4c07fde4730c818842b21554d1f7551ed
 
     public string StaffName { get; set; } = null!;
 
@@ -30,26 +21,6 @@ public partial class Staff
 
     public string Qualification { get; set; } = null!;
 
-<<<<<<< HEAD
-        public int DepartmentId { get; set; }
-
-        public DateTime CreatedDate { get; set; }
-        
-        public virtual Department? Department { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<DoctorReferral>? DoctorReferrals { get; set; } = null;
-        [JsonIgnore]
-        public virtual ICollection<Doctor> Doctors { get; set; } = null;
-        [JsonIgnore]
-        public virtual ICollection<LabTestPrescription>? LabTestPrescriptions { get; set; } = null;
-        [JsonIgnore]
-        public virtual ICollection<MainPrescription>? MainPrescriptions { get; set; } = null;
-        [JsonIgnore]
-        public virtual ICollection<MedicinePrescription>? MedicinePrescriptions { get; set; } = null;
-        [JsonIgnore]
-        public virtual ICollection<UserRegistration>? UserRegistrations { get; set; } = null;
-    }
-=======
     public int DepartmentId { get; set; }
 
     public DateTime CreatedDate { get; set; }
@@ -69,5 +40,4 @@ public partial class Staff
     public virtual ICollection<MedicinePrescription> MedicinePrescriptions { get; set; } = new List<MedicinePrescription>();
 
     public virtual ICollection<UserRegistration> UserRegistrations { get; set; } = new List<UserRegistration>();
->>>>>>> 4e7aadf4c07fde4730c818842b21554d1f7551ed
 }
