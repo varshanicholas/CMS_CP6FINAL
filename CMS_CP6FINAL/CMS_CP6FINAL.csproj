@@ -28,8 +28,10 @@
   </ItemGroup>
 
 
+
   <ItemGroup>
     <Folder Include="ViewModel\" />
+    <Folder Include="Repository\" />
   </ItemGroup>
 
 </Project>

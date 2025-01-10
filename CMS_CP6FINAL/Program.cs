@@ -51,6 +51,8 @@ namespace CMS_CP6FINAL
             builder.Services.AddDbContext<CmsCamp6finalContext>(options =>
                      options.UseSqlServer(builder.Configuration.GetConnectionString("PropelAug24Connection")));
 
+<<<<<<< HEAD
+=======
             builder.Services.AddScoped<IReceptionistRepository , ReceptionistRepository >();
 
 
@@ -66,7 +68,10 @@ namespace CMS_CP6FINAL
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+<<<<<<< HEAD
+=======
 
+>>>>>>> 81d8d89bb65215eaa82ed75f09d12a5529332f40
             //swagger registration
 
             builder.Services.AddSwaggerGen();

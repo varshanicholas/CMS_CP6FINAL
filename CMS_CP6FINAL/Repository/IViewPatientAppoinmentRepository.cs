@@ -1,4 +1,4 @@
-﻿using CMS_CP6FINAL.ViewModel;
+﻿//using CMS_CP6FINAL.ViewModel;
 
 public interface IViewPatientAppoinmentRepository
 {

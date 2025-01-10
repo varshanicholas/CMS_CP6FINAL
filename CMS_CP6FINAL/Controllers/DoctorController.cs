@@ -28,3 +28,4 @@ public class DoctorController : ControllerBase
         return Ok(reports);
     }
 }
+>>>>>>> 81d8d89bb65215eaa82ed75f09d12a5529332f40
