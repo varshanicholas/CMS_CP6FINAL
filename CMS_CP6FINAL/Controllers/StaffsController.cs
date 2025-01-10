@@ -10,62 +10,132 @@ namespace CMS_CP6FINAL.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
-        private readonly IStaffService _staffService;
 
-        // Constructor Injection
-        public StaffController(IStaffService staffService)
+        private readonly IStaffService _service;
+
+        public StaffController(IStaffService service)
         {
-            _staffService = staffService;
+            _service = service;
         }
 
-        // POST: api/Staff
-        [HttpPost]
-        public async Task<ActionResult<Staff>> PostStaff(Staff staff)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Staff>>> GetAllStaffs()
         {
+            var staffs = await _service.GetStaffs();
+            if (staffs == null)
+            {
+                return NotFound("No Staffs found");
+            }
+
+            return Ok(staffs);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Staff>> GetStaffById(int id)
+        {
+            var staff = await _service.GetStaffById(id);
             if (staff == null)
             {
-                return BadRequest("Staff data is null.");
+                return NotFound("No Staff found");
             }
 
-            try
-            {
-                // Call the service to add a new staff record
-                var result = await _staffService.PostStaffReturnRecord(staff);
-
-                if (result.Value != null)
-                {
-                    return CreatedAtAction(nameof(PostStaff), new { id = result.Value.StaffId }, result.Value);
-                }
-
-                return BadRequest("Failed to create staff record.");
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return Ok(staff);
         }
 
-        // GET: api/Staff
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Staff>>> GetStaff()
+        [HttpPost]
+        public async Task<ActionResult<Staff>> InsertPostStaff(Staff staff)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // Call the service to retrieve all staff records
-                var result = await _staffService.GetStaff();
-
-                // Check if the result or its value is null, or if the count is zero
-                if (result == null || result.Value == null || !result.Value.Any())
+                var newStaff = await _service.PostStaff(staff);
+                if (newStaff != null)
                 {
-                    return NotFound("No staff records found.");
+                    return Ok(newStaff);
                 }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            return BadRequest();
+        }
 
+        [HttpPost("v1")]
+        public async Task<ActionResult<int>> InsertPostStaffReturnId(Staff staff)
+        {
+            if (ModelState.IsValid)
+            {
+                var newStaffId = await _service.PostStaffReturnId(staff);
+                if (newStaffId != null)
+                {
+                    return Ok(newStaffId);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Staff>> UpdatePutStaff(int id, Staff staff)
+        {
+            if (ModelState.IsValid)
+            {
+                var updatedStaff = await _service.PutStaff(id, staff);
+                if (updatedStaff != null)
+                {
+                    return Ok(updatedStaff);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStaff(int id)
+        {
+            var result = await _service.DeleteStaff(id);
+            if (result.StatusCode == 200)
+            {
                 return Ok(result.Value);
             }
-            catch (System.Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return NotFound(result.Value);
         }
+
+        [HttpGet("by-phone/{phoneNumber}")]
+        public async Task<ActionResult<Staff>> GetStaffByPhoneNumber(string phoneNumber)
+        {
+            var staff = await _service.GetStaffByPhoneNumber(phoneNumber);
+            if (staff == null)
+            {
+                return NotFound("No Staff found");
+            }
+
+            return Ok(staff);
+        }
+
+
+
+
+        [HttpGet("by-phone-or-id/{phoneNumber}/{staffId}")]
+public async Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId)
+{
+    var staff = await _service.GetStaffByPhoneNumberOrStaffId(phoneNumber, staffId);
+    if (staff == null || staff.Value == null)
+    {
+        Console.WriteLine("No staff found in controller.");
+        return NotFound("No Staff found");
+    }
+
+    Console.WriteLine($"Returning staff in controller: {staff.Value.StaffName}");
+    return Ok(staff);
+}
+
+
     }
 }

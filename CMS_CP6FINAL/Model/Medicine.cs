@@ -19,9 +19,9 @@ public partial class Medicine
 
     public bool IsActive { get; set; }
 
-    public virtual MedicineCategory MedicineCategory { get; set; } = null!;
-
+    public virtual MedicineCategory? MedicineCategory { get; set; } = null!;
+     [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<MedicineInventory> MedicineInventories { get; set; } = new List<MedicineInventory>();
-
+     [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<MedicinePrescription> MedicinePrescriptions { get; set; } = new List<MedicinePrescription>();
 }
