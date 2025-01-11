@@ -1,4 +1,4 @@
-﻿using CMS_CP6FINAL.Repository;
+using CMS_CP6FINAL.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;

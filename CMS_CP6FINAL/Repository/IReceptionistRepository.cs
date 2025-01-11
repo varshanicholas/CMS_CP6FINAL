@@ -58,7 +58,7 @@ namespace CMS_CP6FINAL.Repository
 
         #region-7 --Get Doctors by department
 
-        public  Task<IEnumerable<string>> GetDoctorsByDepartmentId(int departmentId);
+        public  Task<IEnumerable<Doctor>> GetDoctorsByDepartmentId(int departmentId);
 
 
 
@@ -78,8 +78,13 @@ namespace CMS_CP6FINAL.Repository
 
         public  Task<decimal?> GetConsultationFeeByDoctorId(int doctor);
 
-       // public Task<ActionResult<DailyAppointmentAvailability>> GetTodayAppointsByDoctorId(int doctorId);
+        
+        public Task<int> GetTotalAppointmentsByDoctorId(int doctorId);
+        
+
+
+        // public Task<ActionResult<DailyAppointmentAvailability>> GetTodayAppointsByDoctorId(int doctorId);
     }
 
-  
+
 }

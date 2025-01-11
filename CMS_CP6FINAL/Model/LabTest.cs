@@ -26,8 +26,12 @@ public partial class LabTest
     public bool IsActive { get; set; }
 
     public virtual LabTestCategory? Category { get; set; } = null!;
-     [System.Text.Json.Serialization.JsonIgnore]
+
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<LabReport> LabReports { get; set; } = new List<LabReport>();
+    [System.Text.Json.Serialization.JsonIgnore]
+
      [System.Text.Json.Serialization.JsonIgnore]
+
     public virtual ICollection<LabTestPrescription> LabTestPrescriptions { get; set; } = new List<LabTestPrescription>();
 }
