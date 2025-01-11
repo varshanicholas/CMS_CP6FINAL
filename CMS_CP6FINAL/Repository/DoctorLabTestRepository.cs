@@ -10,10 +10,10 @@ namespace CMS_CP6FINAL.Repository
     {
         private readonly CmsCamp6finalContext _context;
 
-//        public DoctorLabTestRepository(CmsCamp6finalContext context)
-//        {
-//            _context = context;
-//        }
+        public DoctorLabTestRepository(CmsCamp6finalContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IEnumerable<DoctorLabTestViewModel>> GetLabTestReportsByAppointmentIdAsync(int appointmentId)
         {
