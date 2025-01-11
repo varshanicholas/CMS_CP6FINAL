@@ -1,7 +1,8 @@
+
 ﻿using CMS_CP6FINAL.Model;
 using CMS_CP6FINAL.Repository;
-using CMS_CP6FINAL.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,125 +10,110 @@ namespace CMS_CP6FINAL.Service
 {
     public class StaffService : IStaffService
     {
-        private readonly IStaffRepository _staffRepository;
+        private readonly IStaffRepository _repository;
 
-        // Constructor Injection
-        public StaffService(IStaffRepository staffRepository)
+        public StaffService(IStaffRepository repository)
         {
-            _staffRepository = staffRepository;
+            _repository = repository;
         }
 
-        // Insert
-        public async Task<ActionResult<Staff>> PostStaffReturnRecord(Staff staff)
+        public async Task<ActionResult<IEnumerable<Staff>>> GetStaffs()
         {
-            return await _staffRepository.PostStaffReturnRecord(staff);
+            return await _repository.GetStaffs();
         }
 
-        // Update
-        //public async Task<ActionResult<Staff>> PutStaff(int id, Staff staff)
-        //{
-        //    return await _staffRepository.PutStaff(id, staff);
-        //}
-
-        // Search By StaffId
         public async Task<ActionResult<Staff>> GetStaffById(int id)
         {
-            return await _staffRepository.GetStaffById(id);
+            return await _repository.GetStaffById(id);
         }
 
-        // List All Staff
-        public async Task<ActionResult<IEnumerable<Staff>>> GetStaff()
+        public async Task<ActionResult<Staff>> PostStaff(Staff staff)
         {
-            return await _staffRepository.GetStaff();
+            return await _repository.PostStaff(staff);
         }
 
-        public async Task<Department> FindDepartmentById(int departmentId) { return await _staffRepository.FindDepartmentById(departmentId); }
-
-        // Delete Staff
-        //public JsonResult DeleteStaff(int id)
-        //{
-        //    return _staffRepository.DeleteStaff(id);
-        //}
-
-        //// Get all departments
-        //public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
-        //{
-        //    return await _staffRepository.GetDepartments();
-        //}
-
-        //// Insert a Staff member using stored procedure - Return Staff Record
-        //public async Task<ActionResult<IEnumerable<Staff>>> PostStaffByProcedureReturnRecord(Staff staff)
-        //{
-        //    return await _staffRepository.PostStaffByProcedureReturnRecord(staff);
-        //}
-
-        //// Implementation of new search methods
-        //public async Task<ActionResult<Staff>> GetStaffByPhoneNumber(string phoneNumber)
-        //{
-        //    return await _staffRepository.GetStaffByPhoneNumber(phoneNumber);
-        //}
-
-        //public async Task<ActionResult<Staff>> GetStaffByStaffId(int staffId)
-        //{
-        //    return await _staffRepository.GetStaffByStaffId(staffId);
-        //}
-
-        // Methods for StaffViewModel
-        #region StaffViewModel Methods
-
-        // 1- Get All StaffView - Search All
-        public async Task<ActionResult<IEnumerable<StaffViewModel>>> GetStaffView()
+        public async Task<ActionResult<int>> PostStaffReturnId(Staff staff)
         {
-            return await _staffRepository.GetStaffView();
+            return await _repository.PostStaffReturnId(staff);
         }
 
-        // 3 - Get a StaffView member based on Id
-        public async Task<ActionResult<StaffViewModel>> GetStaffViewById(int id)
+        public async Task<ActionResult<Staff>> PutStaff(int id, Staff staff)
         {
-            return await _staffRepository.GetStaffViewById(id);
+            return await _repository.PutStaff(id, staff);
         }
 
-        // 4 - Insert a StaffView member - Return StaffView Record
-        public async Task<ActionResult<StaffViewModel>> PostStaffViewReturnRecord(Staff staff)
+        public async Task<JsonResult> DeleteStaff(int id)
         {
-            return await _staffRepository.PostStaffViewReturnRecord(staff);
+            // Ensure proper asynchronous handling
+            return await Task.Run(() => _repository.DeleteStaff(id));
         }
 
-        // 5 - Insert a StaffView member - Return ID
-        public async Task<ActionResult<int>> PostStaffViewReturnId(Staff staff)
+        public async Task<ActionResult<Staff>> GetStaffByPhoneNumber(string phoneNumber)
         {
-            return await _staffRepository.PostStaffViewReturnId(staff);
+            return await _repository.GetStaffByPhoneNumber(phoneNumber);
         }
 
-        // 6 - Update a StaffView member with ID and staffView details
-        public async Task<ActionResult<StaffViewModel>> PutStaffView(int id, Staff staff)
-        {
-            return await _staffRepository.PutStaffView(id, staff);
-        }
+        public async Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId)
+{
+    var staff = await _repository.GetStaffByPhoneNumberOrStaffId(phoneNumber, staffId);
+    if (staff == null || staff.Value == null)
+    {
+        Console.WriteLine("No staff found in service.");
+        return new ActionResult<Staff>((Staff)null); // Explicitly specify the type
+    }
+    else
+    {
+        Console.WriteLine($"Found staff in service: {staff.Value.StaffName}");
+    }
+    return staff;
+}
 
-        // 7 - Delete a StaffView member
-        public JsonResult DeleteStaffView(int id)
-        {
-            return _staffRepository.DeleteStaffView(id);
-        }
 
-        // 9 - Additional methods if needed
-        public async Task<ActionResult<IEnumerable<StaffViewModel>>> PostStaffViewByProcedureReturnRecord(Staff staff)
-        {
-            return await _staffRepository.PostStaffViewByProcedureReturnRecord(staff);
-        }
-
-        // New methods for search functionality
-        public async Task<ActionResult<StaffViewModel>> GetStaffViewByPhoneNumber(string phoneNumber)
-        {
-            return await _staffRepository.GetStaffViewByPhoneNumber(phoneNumber);
-        }
-
-        public async Task<ActionResult<StaffViewModel>> GetStaffViewByStaffId(int staffId)
-        {
-            return await _staffRepository.GetStaffViewByStaffId(staffId);
-        }
-
-        #endregion
     }
 }
+
+﻿//using CMS_CP6FINAL.Model;
+//using CMS_CP6FINAL.ViewModel;
+//using CMS_CP6FINAL.Utility;
+//using CMS_CP6FINAL.Utility;
+//using CMS_CP6FINAL.Repository;
+//using Microsoft.AspNetCore.Mvc;
+//using System.Collections.Generic;
+//using System.Threading.Tasks;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.AspNetCore.Mvc;
+
+//namespace CMS_CP6FINAL.Service
+//{
+//    public class StaffService : IStaffService
+//    {
+//        private readonly IStaffRepository _staffRepository;
+
+//        // Constructor Injection
+//        public StaffService(IStaffRepository staffRepository)
+//        {
+//            _staffRepository = staffRepository;
+//        }
+
+//        // Insert
+//        public async Task<ActionResult<Staff>> PostStaffReturnRecord(Staff staff)
+//        {
+//            // Apply validation logic for staff properties
+//            staff.StaffName = Validations.ValidateStaffName();   // Validate staff name
+//            staff.Gender = Validations.ValidateGender();         // Validate gender
+//            staff.PhoneNumber = Validations.ValidatePhoneNumber(); // Validate phone number
+//            staff.Email = Validations.ValidateEmail();           // Validate email
+//            staff.Address = Validations.ValidateAddress();       // Validate address
+//            staff.Qualification = Validations.ValidateQualification(); // Validate qualification
+
+//            await _staffRepository.PostStaffReturnRecord(staff);
+//            return new ActionResult<Staff>(staff);
+//        }
+
+//        // Get All Staff
+//        public async Task<ActionResult<IEnumerable<Staff>>> GetStaff()
+//        {
+//            return await _staffRepository.GetStaff();
+//        }
+//    }
+//}
