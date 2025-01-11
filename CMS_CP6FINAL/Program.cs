@@ -60,8 +60,8 @@ namespace CMS_CP6FINAL
             // builder.Services.AddScoped<IDoctorStartConsultationRepository, DoctorStartConsultationRepository>();
             builder.Services.AddScoped<IDoctorLabTestRepository, DoctorLabTestRepository>();
 
-//builder.Services.AddScoped<IStaffRepository, StaffRepository>();
-//builder.Services.AddScoped<IStaffService, StaffService>();
+            builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
 
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

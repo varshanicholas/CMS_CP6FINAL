@@ -80,7 +80,8 @@ namespace CMS_CP6FINAL.Repository
 
         
         public Task<int> GetTotalAppointmentsByDoctorId(int doctorId);
-        
+
+        public Task<ActionResult<NewAppointment>> BookAppointment([FromBody] NewAppointment newAppointment);
 
 
         // public Task<ActionResult<DailyAppointmentAvailability>> GetTodayAppointsByDoctorId(int doctorId);

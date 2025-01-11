@@ -126,6 +126,42 @@ namespace CMS_CP6FINAL.Controllers
 
 
 
+        [HttpPost("Bookappointment")]
+        public async Task<ActionResult<NewAppointment>> BookAppointment([FromBody] NewAppointment newAppointment)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Invalid appointment data" });
+            }
+
+            try
+            {
+                var tokenNumber = await _repository.GetTotalAppointmentsByDoctorId(newAppointment.DoctorId);
+                newAppointment.TokenNumber = tokenNumber;
+
+                // Generate consultation fee based on doctor
+                var consultationFee = await _repository.GetConsultationFeeByDoctorId(newAppointment.DoctorId);
+                newAppointment.ConsultationFees = (int?)consultationFee;
+
+                // Call the repository method to book the appointment
+                var bookedAppointment = await _repository.BookAppointment(newAppointment);
+
+                // Return the booked appointment details
+                return Ok(new { success = true, appointment = bookedAppointment });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Return an error response in case of an exception
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetConsultationFeesByDoctorId(int id)
         {

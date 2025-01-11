@@ -317,41 +317,74 @@ namespace CMS_CP6FINAL.Repository
         //    }
         //}
 
+
+        #region 8 - Insert Appointment and return success
+        public async Task<ActionResult<NewAppointment>> BookAppointment(NewAppointment appointment)
+        {
+            try
+            {
+                if (appointment == null || _context == null)
+                    throw new ArgumentNullException(nameof(appointment));
+
+                // Check if the doctor is available on the given date
+                var dailyAvailability = await _context.NewAppointments
+                    .FirstOrDefaultAsync(d => d.DoctorId == appointment.DoctorId);
+
+                
+              
+                // Save the appointment
+                await _context.NewAppointments.AddAsync(appointment);
+                await _context.SaveChangesAsync();
+
+                return appointment; // Return the booked appointment
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error booking appointment: {ex.Message}");
+            }
+        }
+
+        private async Task<int?> GetDoctorAvailabilityByDoctorId(NewAppointment appointment, object doctorId)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
         public async Task<NewAppointment> SaveAppointment(NewAppointment appointment)
         {
            
 
             try
             {
-                //check if Patient object is not null
+                
 
                 if (appointment == null)
                 {
                     throw new ArgumentNullException(nameof(appointment), "appointment Data is Null");
                 }
 
-                //ensure the context is not null
+                
 
                 if (_context == null)
                 {
                     throw new InvalidOperationException("Database context is not initialized");
                 }
 
-                //add the Patient record to the dbcontext
+            
 
                 await _context.NewAppointments.AddAsync(appointment);
 
-                //save changes to the database
+                
 
                 await _context.SaveChangesAsync();
 
-                //retrieve the employee with the related departments
+                
 
                 var appointmentDetails = await _context.NewAppointments
                     .FirstOrDefaultAsync(p => p.AppointmentId == appointment.AppointmentId);//eager load
 
 
-                //return the added Patient record
+                
 
                 return appointmentDetails;
 
