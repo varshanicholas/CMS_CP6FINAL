@@ -11,6 +11,7 @@ namespace CMS_CP6FINAL.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
+
         private readonly IStaffService _service;
 
         public StaffController(IStaffService service)

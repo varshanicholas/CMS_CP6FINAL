@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace CMS_CP6FINAL.Model
 {
+
     public partial class Staff
     {
         public int StaffId { get; set; }
+
 
         public string StaffName { get; set; } = null!;
 
@@ -21,14 +23,16 @@ namespace CMS_CP6FINAL.Model
 
         public string Qualification { get; set; } = null!;
 
+
         public int DepartmentId { get; set; }
 
+
         public DateTime CreatedDate { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public virtual Department? Department { get; set; } // This should not be ignored to view staff along with department
-
+           public bool IsActive { get; set; }
+        
+        public virtual Department? Department { get; set; }
+       
+   
         [System.Text.Json.Serialization.JsonIgnore]
         public virtual ICollection<DoctorReferral> DoctorReferrals { get; set; } = new List<DoctorReferral>();
 

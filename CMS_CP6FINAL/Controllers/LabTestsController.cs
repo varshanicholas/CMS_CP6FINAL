@@ -65,8 +65,29 @@ namespace CMS_CP6FINAL.Controllers
             return BadRequest();
         }
 
+<<<<<<< HEAD
         [HttpPut("{id}")]
         public async Task<ActionResult<LabTest>> UpdateLabTestById(int id, LabTest labTest)
+=======
+
+      [HttpPost("v1")]
+public async Task<ActionResult<int>> AddLabTestReturnId(LabTest labTest)
+{
+    if (ModelState.IsValid)
+    {
+        var labTestIdResult = await _service.AddLabTestReturnId(labTest);
+        if (labTestIdResult.Result is OkObjectResult okResult && (int)okResult.Value > 0)
+        {
+            return Ok((int)okResult.Value); // Return Ok result with LabTestId
+        }
+        return NotFound();
+    }
+    return BadRequest();
+}
+
+        [HttpPut("{id}/{name}")]
+        public async Task<ActionResult<LabTest>> UpdateLabTestByIdAndName(int id, string name, LabTest labTest)
+>>>>>>> ca42b0a2b5ce1c9947bd61b01c79ff8d5431b3c3
         {
             if (ModelState.IsValid)
             {

@@ -1,6 +1,7 @@
 ﻿using CMS_CP6FINAL.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace CMS_CP6FINAL.Repository
 {
@@ -318,20 +319,48 @@ namespace CMS_CP6FINAL.Repository
 
         public async Task<NewAppointment> SaveAppointment(NewAppointment appointment)
         {
+           
+
             try
             {
-                if (_context.NewAppointments != null)
+                //check if Patient object is not null
+
+                if (appointment == null)
                 {
-                    var result = await _context.NewAppointments.AddAsync(appointment);
-                    return result.Entity;
+                    throw new ArgumentNullException(nameof(appointment), "appointment Data is Null");
                 }
 
-                return null;
+                //ensure the context is not null
+
+                if (_context == null)
+                {
+                    throw new InvalidOperationException("Database context is not initialized");
+                }
+
+                //add the Patient record to the dbcontext
+
+                await _context.NewAppointments.AddAsync(appointment);
+
+                //save changes to the database
+
+                await _context.SaveChangesAsync();
+
+                //retrieve the employee with the related departments
+
+                var appointmentDetails = await _context.NewAppointments
+                    .FirstOrDefaultAsync(p => p.AppointmentId == appointment.AppointmentId);//eager load
+
+
+                //return the added Patient record
+
+                return appointmentDetails;
+
+
             }
+
             catch (Exception ex)
             {
-                // Optionally log the exception
-                return null; // or handle error more appropriately based on your requirements
+                return null;
             }
         }
 
@@ -379,29 +408,33 @@ namespace CMS_CP6FINAL.Repository
         }
 
 
-        public async Task<IEnumerable<string>> GetDoctorsByDepartmentId(int departmentId)
+        public async Task<IEnumerable<Doctor>> GetDoctorsByDepartmentId(int departmentId)
         {
             try
             {
                 if (_context != null)
                 {
-                    // Select only the staff names where the DepartmentId matches
-                    var staffNames = await _context.Staff
-                        .Where(s => s.DepartmentId == departmentId)
-                        .Select(s => s.StaffName) // Selecting only the name
+                    // Fetch doctors where the associated staff's DepartmentId matches the provided value
+                    var doctors = await _context.Doctors
+                        .Include(d => d.Staff) // Ensure the related Staff entity is loaded
+                        .Where(d => d.Staff != null && d.Staff.DepartmentId == departmentId)
                         .ToListAsync();
 
-                    return staffNames;
+                    return doctors; // Return the list of doctors
                 }
 
-                return Enumerable.Empty<string>(); // Return an empty collection if the context is null
+                // Return an empty collection if the context is null
+                return Enumerable.Empty<Doctor>();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-                return Enumerable.Empty<string>(); // Return an empty collection on error
+                // Log the error (adjust this to use a proper logging framework if available)
+                Console.WriteLine($"An error occurred while fetching doctors: {ex.Message}");
+                // Return an empty collection on error
+                return Enumerable.Empty<Doctor>();
             }
         }
+
 
 
         public async Task<IEnumerable<DoctorAvailability>> GetDoctorAvailabilityByDoctorId(int doctorId)
@@ -455,6 +488,15 @@ namespace CMS_CP6FINAL.Repository
         //        return StatusCode(500, $"Internal server error: {ex.Message}");
         //    }
         //}
+
+        public async Task<int> GetTotalAppointmentsByDoctorId(int doctorId)
+        {
+            // Assuming you have an "Appointments" table with DoctorId as a foreign key
+            var totalAppointments = await _context.NewAppointments
+                                                   .Where(a => a.DoctorId == doctorId)
+                                                   .CountAsync();
+            return totalAppointments;
+        }
 
     }
 }
