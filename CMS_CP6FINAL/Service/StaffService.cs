@@ -1,8 +1,8 @@
 
 ﻿using CMS_CP6FINAL.Model;
 using CMS_CP6FINAL.Repository;
+using CMS_CP6FINAL.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -44,7 +44,6 @@ namespace CMS_CP6FINAL.Service
 
         public async Task<JsonResult> DeleteStaff(int id)
         {
-            // Ensure proper asynchronous handling
             return await Task.Run(() => _repository.DeleteStaff(id));
         }
 
@@ -54,19 +53,19 @@ namespace CMS_CP6FINAL.Service
         }
 
         public async Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId)
-{
-    var staff = await _repository.GetStaffByPhoneNumberOrStaffId(phoneNumber, staffId);
-    if (staff == null || staff.Value == null)
+        {
+            return await _repository.GetStaffByPhoneNumberOrStaffId(phoneNumber, staffId);
+        }
+
+        
+    public async Task<ActionResult<IEnumerable<StaffDeptViewModel>>> GetAllStaffsByViewModel()
     {
-        Console.WriteLine("No staff found in service.");
-        return new ActionResult<Staff>((Staff)null); // Explicitly specify the type
+        return await _repository.GetViewModelStaffs();
     }
-    else
-    {
-        Console.WriteLine($"Found staff in service: {staff.Value.StaffName}");
-    }
-    return staff;
-}
+
+       
+
+
 
 
     }

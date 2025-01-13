@@ -1,5 +1,6 @@
 ﻿using CMS_CP6FINAL.Model;
 using CMS_CP6FINAL.Service;
+using CMS_CP6FINAL.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -123,19 +124,34 @@ namespace CMS_CP6FINAL.Controllers
 
 
         [HttpGet("by-phone-or-id/{phoneNumber}/{staffId}")]
-public async Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId)
-{
-    var staff = await _service.GetStaffByPhoneNumberOrStaffId(phoneNumber, staffId);
-    if (staff == null || staff.Value == null)
+        public async Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId)
+        {
+            var staff = await _service.GetStaffByPhoneNumberOrStaffId(phoneNumber, staffId);
+            if (staff == null || staff.Value == null)
+            {
+                Console.WriteLine("No staff found in controller.");
+                return NotFound("No Staff found");
+            }
+
+            Console.WriteLine($"Returning staff in controller: {staff.Value.StaffName}");
+            return Ok(staff);
+        }
+        [HttpGet("vm")]
+    public async Task<ActionResult<IEnumerable<StaffDeptViewModel>>> GetAllStaffsByViewModel()
     {
-        Console.WriteLine("No staff found in controller.");
-        return NotFound("No Staff found");
+        var staffs = await _service.GetAllStaffsByViewModel();
+        if (staffs == null || !staffs.Value.Any())
+        {
+            return NotFound("No Staff found");
+        }
+
+        return Ok(staffs.Value);
     }
 
-    Console.WriteLine($"Returning staff in controller: {staff.Value.StaffName}");
-    return Ok(staff);
-}
+        
+       
 
 
     }
+
 }

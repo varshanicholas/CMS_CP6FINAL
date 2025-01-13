@@ -1,9 +1,13 @@
-﻿using CMS_CP6FINAL.Model;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+<<<<<<< HEAD
+using CMS_CP6FINAL.Model;
+using CMS_CP6FINAL.ViewModel;
+using Microsoft.AspNetCore.Mvc;
+=======
 using CMS_CP6FINAL.Utility;
 using Microsoft.EntityFrameworkCore;
+>>>>>>> ca42b0a2b5ce1c9947bd61b01c79ff8d5431b3c3
 
 namespace CMS_CP6FINAL.Service
 {
@@ -19,6 +23,11 @@ namespace CMS_CP6FINAL.Service
         Task<ActionResult<Staff>> GetStaffByPhoneNumber(string phoneNumber);
         Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId);
 
+<<<<<<< HEAD
+          Task<ActionResult<IEnumerable<StaffDeptViewModel>>> GetAllStaffsByViewModel();
+        
+        }
+=======
         //Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId);
 
         // Insert
@@ -79,6 +88,7 @@ namespace CMS_CP6FINAL.Service
         #endregion
 
     }
+>>>>>>> ca42b0a2b5ce1c9947bd61b01c79ff8d5431b3c3
 }
 
 

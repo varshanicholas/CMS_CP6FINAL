@@ -4,7 +4,6 @@ using CMS_CP6FINAL.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMS_CP6FINAL.Repository
@@ -23,9 +22,9 @@ namespace CMS_CP6FINAL.Repository
             return await _context.LabTests.Include(lt => lt.Category).ToListAsync();
         }
 
-        public async Task<ActionResult<LabTest>> GetLabTestByIdAndName(int id, string name)
+        public async Task<ActionResult<LabTest>> GetLabTestById(int id)
         {
-            return await _context.LabTests.Include(lt => lt.Category).FirstOrDefaultAsync(lt => lt.LabTestId == id && lt.LabTestName == name);
+            return await _context.LabTests.Include(lt => lt.Category).FirstOrDefaultAsync(lt => lt.LabTestId == id);
         }
 
         public async Task<ActionResult<LabTest>> AddLabTest(LabTest labTest)
@@ -45,20 +44,17 @@ namespace CMS_CP6FINAL.Repository
             {
                 await _context.LabTests.AddAsync(labTest);
                 await _context.SaveChangesAsync();
-                return new OkObjectResult(labTest.LabTestId); // Return OkObjectResult with LabTestId
+                return new OkObjectResult(labTest.LabTestId);
             }
             return new BadRequestResult();
         }
 
-
-        public async Task<ActionResult<LabTest>> UpdateLabTestByIdAndName(int id, string name, LabTest labTest)
+        public async Task<ActionResult<LabTest>> UpdateLabTestById(int id, LabTest labTest)
         {
             var existingLabTest = await _context.LabTests.FindAsync(id);
 
-            if (existingLabTest != null && existingLabTest.LabTestName == name && labTest.IsValid())
+            if (existingLabTest != null && labTest.IsValid())
             {
-                // Add logging to check the Cost value
-                Console.WriteLine($"Updating LabTest with Cost: {labTest.Cost}"); // Added logging
                 existingLabTest.LabTestName = labTest.LabTestName;
                 existingLabTest.Cost = labTest.Cost;
                 existingLabTest.ResultType = labTest.ResultType;
@@ -74,41 +70,29 @@ namespace CMS_CP6FINAL.Repository
             return new BadRequestResult();
         }
 
-        //isactive deletion
-
         public JsonResult DeleteLabTest(int id)
-{
-    var existingLabTest = _context.LabTests.Find(id);
+        {
+            var existingLabTest = _context.LabTests.Find(id);
 
-    if (existingLabTest != null)
-    {
-        existingLabTest.IsActive = false;
-        _context.SaveChanges(); // Ensure the change is saved synchronously
-        return new JsonResult(new { success = true, message = "LabTest marked as inactive successfully" }) { StatusCode = 200 };
-    }
+            if (existingLabTest != null)
+            {
+                existingLabTest.IsActive = false;
+                _context.SaveChanges();
+                return new JsonResult(new { success = true, message = "LabTest marked as inactive successfully" }) { StatusCode = 200 };
+            }
 
-    return new JsonResult(new { success = false, message = "LabTest not found" }) { StatusCode = 404 };
-}
+            return new JsonResult(new { success = false, message = "LabTest not found" }) { StatusCode = 404 };
+        }
 
-       
+        public async Task<ActionResult<LabTest>> GetLabTestByName(string name)
+        {
+            return await _context.LabTests.Include(lt => lt.Category).FirstOrDefaultAsync(lt => lt.LabTestName == name);
+        }
 
-
-        //for etier deletion
-
-        //       public JsonResult DeleteLabTest(int id)
-        //{
-        //    var existingLabTest = _context.LabTests.Find(id);
-
-        //    if (existingLabTest != null)
-        //    {
-        //        _context.LabTests.Remove(existingLabTest);
-        //        _context.SaveChanges(); // Corrected from SaveChangesAsync to SaveChanges
-        //        return new JsonResult(new { success = true, message = "LabTest deleted successfully" }) { StatusCode = 200 };
-        //    }
-
-        //    return new JsonResult(new { success = false, message = "LabTest not found" }) { StatusCode = 404 };
-        //}
-
+        public async Task<ActionResult<IEnumerable<LabTestCategory>>> GetAllCategories()
+        {
+            return await _context.LabTestCategories.Include(c => c.LabTests).ToListAsync();
+        }
     }
 }
 
