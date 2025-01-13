@@ -29,7 +29,7 @@ public partial class LabTest
 
     [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<LabReport> LabReports { get; set; } = new List<LabReport>();
-    [System.Text.Json.Serialization.JsonIgnore]
+  
 
      [System.Text.Json.Serialization.JsonIgnore]
 

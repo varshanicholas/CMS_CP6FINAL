@@ -71,7 +71,6 @@ namespace CMS_CP6FINAL.Repository
 
         //public Task<IEnumerable<DoctorAvailability>> GetDoctorAvailabilityWeekAndDepartmentId(int departmentId, DateTime appointmentDate);
 
-        public Task<NewAppointment> SaveAppointment(NewAppointment appointment);
 
 
         #endregion
@@ -80,11 +79,11 @@ namespace CMS_CP6FINAL.Repository
 
         
         public Task<int> GetTotalAppointmentsByDoctorId(int doctorId);
+       public Task<NewAppointment> BookAppointment(NewAppointment appointment);
+        public Task<ActionResult<IEnumerable<NewAppointment>>> PostNewAppointmentByProcedure(NewAppointment appointment);
 
-        public Task<ActionResult<NewAppointment>> BookAppointment([FromBody] NewAppointment newAppointment);
 
 
-        // public Task<ActionResult<DailyAppointmentAvailability>> GetTodayAppointsByDoctorId(int doctorId);
     }
 
 

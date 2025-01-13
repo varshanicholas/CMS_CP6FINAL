@@ -5,6 +5,7 @@ using CMS_CP6FINAL.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using CMS_CP6FINAL.Repositories;
 
 
 namespace CMS_CP6FINAL

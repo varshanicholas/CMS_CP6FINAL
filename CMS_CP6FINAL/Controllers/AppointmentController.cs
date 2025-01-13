@@ -2,7 +2,9 @@
 using CMS_CP6FINAL.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using System.IO;
 using System.Linq;
 
@@ -100,68 +102,6 @@ namespace CMS_CP6FINAL.Controllers
         //}
 
 
-        [HttpPost("SaveAppointment")]
-        public async Task<IActionResult> SaveNewAppointment(NewAppointment newAppointment)
-        {
-            if (ModelState.IsValid)
-            {
-                // Insert a new record and return the result
-                var newAppointmentsDetails = await _repository.SaveAppointment(newAppointment);
-
-                if (newAppointmentsDetails != null)
-                {
-                    // Return 200 OK with the new appointment details
-                    return Ok(newAppointmentsDetails);
-                }
-                else
-                {
-                    // Return 404 if no record is found
-                    return NotFound();
-                }
-            }
-
-            // Return 400 if model state is invalid
-            return BadRequest(ModelState);
-        }
-
-
-
-        [HttpPost("Bookappointment")]
-        public async Task<ActionResult<NewAppointment>> BookAppointment([FromBody] NewAppointment newAppointment)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new { success = false, message = "Invalid appointment data" });
-            }
-
-            try
-            {
-                var tokenNumber = await _repository.GetTotalAppointmentsByDoctorId(newAppointment.DoctorId);
-                newAppointment.TokenNumber = tokenNumber;
-
-                // Generate consultation fee based on doctor
-                var consultationFee = await _repository.GetConsultationFeeByDoctorId(newAppointment.DoctorId);
-                newAppointment.ConsultationFees = (int?)consultationFee;
-
-                // Call the repository method to book the appointment
-                var bookedAppointment = await _repository.BookAppointment(newAppointment);
-
-                // Return the booked appointment details
-                return Ok(new { success = true, appointment = bookedAppointment });
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Return an error response in case of an exception
-                return BadRequest(new { success = false, message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = ex.Message });
-            }
-        }
-
-
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetConsultationFeesByDoctorId(int id)
         {
@@ -242,6 +182,106 @@ namespace CMS_CP6FINAL.Controllers
                     new { success = false, message = "An unexpected error occurred", error = ex.Message });
             }
         }
+
+        //[HttpPost("book")]
+        //public async Task<IActionResult> BookAppointments([FromBody] NewAppointment appointment)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    // Ensure required fields are present
+        //    if (appointment.DoctorId == 0 || appointment.AppointmentDate == null)
+        //    {
+        //        return BadRequest(new { message = "DoctorId and AppointmentDate are required." });
+        //    }
+
+        //    // Set the CreatedDate
+        //    appointment.CreatedDate = DateTime.Now;
+
+        //    try
+        //    {
+        //        var savedAppointment = await _repository.AddAppointment(appointment);
+        //        if (savedAppointment == null)
+        //        {
+        //            return StatusCode(500, new { message = "Failed to save appointment." });
+        //        }
+
+        //        // Return success response with the saved appointment details
+        //        return Ok(new { message = "Appointment booked successfully", appointmentId = savedAppointment.AppointmentId });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Return error response if something goes wrong
+        //        return StatusCode(500, new { message = "An error occurred while booking the appointment", error = ex.Message });
+        //    }
+        //}
+
+
+
+
+        [HttpPost("Book")]
+        public async Task<IActionResult> BookAppointment([FromBody] NewAppointment appointment)
+        {
+            if (appointment.DoctorId == null || appointment.DepartmentId == null ||
+                appointment.AppointmentDate == null || appointment.PatientId == null)
+            {
+                return BadRequest(new { success = false, message = "Missing required fields: DoctorId, DepartmentId, AppointmentDate, PatientId" });
+            }
+
+            try
+            {
+                var bookedAppointment = await _repository.BookAppointment(appointment);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Appointment booked successfully",
+                    data = new
+                    {
+                        bookedAppointment.AppointmentId,
+                        bookedAppointment.DoctorId,
+                        bookedAppointment.DepartmentId,
+                        bookedAppointment.AppointmentDate,
+                        bookedAppointment.PatientId,
+                        bookedAppointment.TokenNumber
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { success = false, message = "An error occurred while booking the appointment", error = ex.Message });
+            }
+        }
+
+
+        [HttpPost("bkAppointment")]
+        public async Task<ActionResult<IEnumerable<NewAppointment>>> PostAppointmentByProcedure(NewAppointment appointment)
+        {
+            // Check if the model state is valid
+            if (ModelState.IsValid)
+            {
+                // Attempt to insert a new appointment record and return the result
+                var newAppointment = await _repository.PostNewAppointmentByProcedure(appointment);
+
+                if (newAppointment != null)
+                {
+                    return Ok(newAppointment); // Return the created appointment records
+                }
+                else
+                {
+                    return NotFound("No appointment could be created or found."); // Handle the case where no data is returned
+                }
+            }
+
+            // Return bad request if model state is invalid
+            return BadRequest("Invalid appointment data provided.");
+        }
+
+
+
 
 
     }

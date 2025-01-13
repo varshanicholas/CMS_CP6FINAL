@@ -1,5 +1,6 @@
 ﻿using CMS_CP6FINAL.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 
@@ -318,84 +319,9 @@ namespace CMS_CP6FINAL.Repository
         //}
 
 
-        #region 8 - Insert Appointment and return success
-        public async Task<ActionResult<NewAppointment>> BookAppointment(NewAppointment appointment)
-        {
-            try
-            {
-                if (appointment == null || _context == null)
-                    throw new ArgumentNullException(nameof(appointment));
+       
 
-                // Check if the doctor is available on the given date
-                var dailyAvailability = await _context.NewAppointments
-                    .FirstOrDefaultAsync(d => d.DoctorId == appointment.DoctorId);
-
-                
-              
-                // Save the appointment
-                await _context.NewAppointments.AddAsync(appointment);
-                await _context.SaveChangesAsync();
-
-                return appointment; // Return the booked appointment
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Error booking appointment: {ex.Message}");
-            }
-        }
-
-        private async Task<int?> GetDoctorAvailabilityByDoctorId(NewAppointment appointment, object doctorId)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
-        public async Task<NewAppointment> SaveAppointment(NewAppointment appointment)
-        {
-           
-
-            try
-            {
-                
-
-                if (appointment == null)
-                {
-                    throw new ArgumentNullException(nameof(appointment), "appointment Data is Null");
-                }
-
-                
-
-                if (_context == null)
-                {
-                    throw new InvalidOperationException("Database context is not initialized");
-                }
-
-            
-
-                await _context.NewAppointments.AddAsync(appointment);
-
-                
-
-                await _context.SaveChangesAsync();
-
-                
-
-                var appointmentDetails = await _context.NewAppointments
-                    .FirstOrDefaultAsync(p => p.AppointmentId == appointment.AppointmentId);//eager load
-
-
-                
-
-                return appointmentDetails;
-
-
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+      
 
         public async Task<ActionResult<Patient>> GetPatientByPhoneNumber(string ph)
         {
@@ -529,6 +455,81 @@ namespace CMS_CP6FINAL.Repository
                                                    .Where(a => a.DoctorId == doctorId)
                                                    .CountAsync();
             return totalAppointments;
+        }
+        public async Task<NewAppointment> BookAppointment(NewAppointment appointment)
+        {
+            try
+            {
+                // Set a default value for DocAvlId if it's null
+                if (appointment.DocAvlId == null)
+                {
+                    appointment.DocAvlId = 1; // Set the default value (adjust as needed)
+                }
+
+                var currentTokenCount = await _context.Set<NewAppointment>()
+                    .CountAsync(a => a.DoctorId == appointment.DoctorId && a.AppointmentDate == appointment.AppointmentDate);
+
+                appointment.TokenNumber = currentTokenCount + 1;
+
+                await _context.Set<NewAppointment>().AddAsync(appointment);
+                await _context.SaveChangesAsync();
+                return appointment;
+            }
+            catch (Exception ex)
+            {
+                // Log the full error, including the inner exception
+                Console.WriteLine($"Error: {ex.Message}, Inner: {ex.InnerException?.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<ActionResult<IEnumerable<NewAppointment>>> PostNewAppointmentByProcedure(NewAppointment appointment)
+        {
+            try
+            {
+                // Validate the appointment object
+                if (appointment == null)
+                {
+                    throw new ArgumentNullException(nameof(appointment), "Appointment data is null");
+                }
+
+                // Ensure the context is not null
+                if (_context == null)
+                {
+                    throw new InvalidOperationException("Database context is not initialized");
+                }
+
+                var result = await _context.NewAppointments.FromSqlRaw(
+    "EXEC InsertNewAppointment @DoctorId, @DepartmentId, @PatientId, @AppointmentDate, @TokenNumber, @ConsultationFees, @RegistrationFees, @ConsultationStatus, @DocAvlId, @CreatedDate",
+    new SqlParameter("@DoctorId", appointment.DoctorId ?? (object)DBNull.Value),
+    new SqlParameter("@DepartmentId", appointment.DepartmentId ?? (object)DBNull.Value),
+    new SqlParameter("@PatientId", appointment.PatientId ?? (object)DBNull.Value),
+    new SqlParameter("@AppointmentDate", appointment.AppointmentDate ?? (object)DBNull.Value),
+    new SqlParameter("@TokenNumber", appointment.TokenNumber ?? (object)DBNull.Value),
+    new SqlParameter("@ConsultationFees", appointment.ConsultationFees ?? (object)DBNull.Value),
+    new SqlParameter("@RegistrationFees", appointment.RegistrationFees ?? (object)DBNull.Value),
+    new SqlParameter("@ConsultationStatus", appointment.ConsultationStatus ?? (object)DBNull.Value),
+    new SqlParameter("@DocAvlId", appointment.DocAvlId ?? (object)DBNull.Value),
+    new SqlParameter("@CreatedDate", appointment.CreatedDate ?? DateTime.Now)
+).ToListAsync();
+
+
+                // Check if the result is valid
+                if (result != null && result.Count > 0)
+                {
+                    return result;
+                }
+                else
+                {
+                    return new List<NewAppointment>(); // Return empty list if no results
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and log if necessary
+                return null;
+            }
         }
 
     }
