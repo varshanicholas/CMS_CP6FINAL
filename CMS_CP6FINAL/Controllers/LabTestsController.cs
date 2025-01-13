@@ -28,10 +28,21 @@ namespace CMS_CP6FINAL.Controllers
             return Ok(labTests);
         }
 
-        [HttpGet("{id}/{name}")]
-        public async Task<ActionResult<LabTest>> GetLabTestByIdAndName(int id, string name)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<LabTest>> GetLabTestById(int id)
         {
-            var labTest = await _service.GetLabTestByIdAndName(id, name);
+            var labTest = await _service.GetLabTestById(id);
+            if (labTest == null)
+            {
+                return NotFound("Lab test not found");
+            }
+            return Ok(labTest);
+        }
+
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<LabTest>> GetLabTestByName(string name)
+        {
+            var labTest = await _service.GetLabTestByName(name);
             if (labTest == null)
             {
                 return NotFound("Lab test not found");
@@ -54,28 +65,12 @@ namespace CMS_CP6FINAL.Controllers
             return BadRequest();
         }
 
-      [HttpPost("v1")]
-public async Task<ActionResult<int>> AddLabTestReturnId(LabTest labTest)
-{
-    if (ModelState.IsValid)
-    {
-        var labTestIdResult = await _service.AddLabTestReturnId(labTest);
-        if (labTestIdResult.Result is OkObjectResult okResult && (int)okResult.Value > 0)
-        {
-            return Ok((int)okResult.Value); // Return Ok result with LabTestId
-        }
-        return NotFound();
-    }
-    return BadRequest();
-}
-
-        [HttpPut("{id}/{name}")]
-        public async Task<ActionResult<LabTest>> UpdateLabTestByIdAndName(int id, string name, LabTest labTest)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<LabTest>> UpdateLabTestById(int id, LabTest labTest)
         {
             if (ModelState.IsValid)
             {
-
-                var updatedLabTest = await _service.UpdateLabTestByIdAndName(id, name, labTest);
+                var updatedLabTest = await _service.UpdateLabTestById(id, labTest);
                 if (updatedLabTest != null)
                 {
                     return Ok(updatedLabTest);
@@ -83,6 +78,17 @@ public async Task<ActionResult<int>> AddLabTestReturnId(LabTest labTest)
                 return NotFound();
             }
             return BadRequest();
+        }
+
+        [HttpGet("categories")]
+        public async Task<ActionResult<IEnumerable<LabTestCategory>>> GetAllCategories()
+        {
+            var categories = await _service.GetAllCategories();
+            if (categories == null)
+            {
+                return NotFound("No categories found");
+            }
+            return Ok(categories);
         }
 
         [HttpDelete("{id}")]

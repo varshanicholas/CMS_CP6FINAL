@@ -1,7 +1,8 @@
-﻿using CMS_CP6FINAL.Model;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using CMS_CP6FINAL.Model;
+using CMS_CP6FINAL.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CMS_CP6FINAL.Repository
 {
@@ -12,10 +13,9 @@ namespace CMS_CP6FINAL.Repository
         Task<ActionResult<Staff>> PostStaff(Staff staff);
         Task<ActionResult<int>> PostStaffReturnId(Staff staff);
         Task<ActionResult<Staff>> PutStaff(int id, Staff staff);
-        JsonResult DeleteStaff(int id);
+        Task<JsonResult> DeleteStaff(int id);
         Task<ActionResult<Staff>> GetStaffByPhoneNumber(string phoneNumber);
         Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId);
-
-        //   Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId);
-    }
+          Task<ActionResult<IEnumerable<StaffDeptViewModel>>> GetViewModelStaffs();
+        }
 }

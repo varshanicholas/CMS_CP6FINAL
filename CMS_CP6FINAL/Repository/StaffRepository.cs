@@ -1,14 +1,17 @@
 ﻿using CMS_CP6FINAL.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CMS_CP6FINAL.ViewModel;
+using CMS_CP6FINAL.Utility;
 
 namespace CMS_CP6FINAL.Repository
 {
     public class StaffRepository : IStaffRepository
     {
-        private readonly CmsCamp6finalContext _context; // Ensure the correct context
+        private readonly CmsCamp6finalContext _context;
 
         public StaffRepository(CmsCamp6finalContext context)
         {
@@ -18,14 +21,14 @@ namespace CMS_CP6FINAL.Repository
         public async Task<ActionResult<IEnumerable<Staff>>> GetStaffs()
         {
             return await _context.Staff
-                                 .Include(staff => staff.Department) // Include Department
+                                 .Include(staff => staff.Department)
                                  .ToListAsync();
         }
 
         public async Task<ActionResult<Staff>> GetStaffById(int id)
         {
             return await _context.Staff
-                                 .Include(staff => staff.Department) // Include Department
+                                 .Include(staff => staff.Department)
                                  .FirstOrDefaultAsync(staff => staff.StaffId == id);
         }
 
@@ -37,8 +40,6 @@ namespace CMS_CP6FINAL.Repository
             }
             _context.Staff.Add(staff);
             await _context.SaveChangesAsync();
-
-            // Include Department in the returned data
             return await _context.Staff
                                  .Include(s => s.Department)
                                  .FirstOrDefaultAsync(s => s.StaffId == staff.StaffId);
@@ -75,14 +76,12 @@ namespace CMS_CP6FINAL.Repository
             existingStaff.IsActive = staff.IsActive;
 
             await _context.SaveChangesAsync();
-
-            // Include Department in the returned data
             return await _context.Staff
                                  .Include(s => s.Department)
                                  .FirstOrDefaultAsync(s => s.StaffId == staff.StaffId);
         }
 
-        public JsonResult DeleteStaff(int id)
+        public async Task<JsonResult> DeleteStaff(int id)
         {
             var existingStaff = _context.Staff.Find(id);
             if (existingStaff == null)
@@ -91,42 +90,59 @@ namespace CMS_CP6FINAL.Repository
             }
 
             existingStaff.IsActive = false;
-            _context.SaveChanges(); // Ensure the change is saved synchronously
+            _context.SaveChanges();
             return new JsonResult(new { success = true, message = "Staff marked as inactive" }) { StatusCode = 200 };
         }
 
-
         public async Task<ActionResult<Staff>> GetStaffByPhoneNumberOrStaffId(string phoneNumber, int staffId)
-{
-    var staff = await _context.Staff
+        {
+            return await _context.Staff
                          .Include(staff => staff.Department)
                          .FirstOrDefaultAsync(staff => staff.PhoneNumber == phoneNumber || staff.StaffId == staffId);
-    if (staff == null)
-    {
-        Console.WriteLine("No matching staff found in repository.");
-    }
-    else
-    {
-        Console.WriteLine($"Found staff in repository: {staff.StaffName}");
-    }
-    return staff;
-}
-
-
-
-
-
-
-
-
+        }
 
         public async Task<ActionResult<Staff>> GetStaffByPhoneNumber(string phoneNumber)
         {
             return await _context.Staff
-                                 .Include(staff => staff.Department) // Include Department
+                                 .Include(staff => staff.Department)
                                  .FirstOrDefaultAsync(staff => staff.PhoneNumber == phoneNumber);
         }
 
-       
+
+
+        
+public async Task<ActionResult<IEnumerable<StaffDeptViewModel>>> GetViewModelStaffs()
+{
+    try
+    {
+        if (_context != null)
+        {
+            return await (from s in _context.Staff
+                          join d in _context.Departments
+                          on s.DepartmentId equals d.DepartmentId
+                          select new StaffDeptViewModel
+                          {
+                              StaffId = s.StaffId,
+                              StaffName = s.StaffName,
+                              Gender = s.Gender,
+                              PhoneNumber = s.PhoneNumber,
+                              Email = s.Email,
+                              Address = s.Address,
+                              Qualification = s.Qualification,
+                              Dob = s.Dob,
+                              DepartmentName = d.DepartmentName,
+                              CreatedDate = s.CreatedDate,
+                              IsActive = s.IsActive
+                          }).ToListAsync();
+        }
+        return new List<StaffDeptViewModel>();
+    }
+    catch (Exception ex)
+    {
+        return null;
+    }
+}
+
+
     }
 }
