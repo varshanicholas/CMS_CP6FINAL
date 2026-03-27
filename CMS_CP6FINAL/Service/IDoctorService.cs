@@ -15,5 +15,11 @@ namespace CMS_CP6FINAL.Service
         Task<JsonResult> DeleteDoctor(int id);
         Task<ActionResult<Doctor>> GetDoctorByPhoneNumberOrDoctorId(string phoneNumber, int doctorId);
         Task<ActionResult<Doctor>> GetDoctorByPhoneNumber(string phoneNumber);
+
+        Task<ActionResult<IEnumerable<Staff>>> GetStaffsByDepartment();
+
+        Task<ActionResult<IEnumerable<Staff>>> GetStaffsNotInDoctorTable();
+         Task<IEnumerable<Specialization>> GetAllSpecializationsAsync();
+        Task<ActionResult<Doctor>> PostDoctorById(int staffId, Doctor doctor);
     }
 }

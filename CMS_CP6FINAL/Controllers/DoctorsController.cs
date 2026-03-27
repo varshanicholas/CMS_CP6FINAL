@@ -76,6 +76,12 @@ namespace CMS_CP6FINAL.Controllers
             return BadRequest();
         }
 
+         [HttpPost("byId/{staffId}")]
+        public async Task<ActionResult<Doctor>> PostDoctorById(int staffId, [FromBody] Doctor doctor)
+        {
+            return await _service.PostDoctorById(staffId, doctor); // New method
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult<Doctor>> UpdatePutDoctor(int id, Doctor doctor)
         {
@@ -130,5 +136,43 @@ namespace CMS_CP6FINAL.Controllers
             Console.WriteLine($"Returning doctor in controller: {doctor.Value.Staff.StaffName}");
             return Ok(doctor);
         }
+
+        [HttpGet("by-department")]
+        public async Task<ActionResult<IEnumerable<Staff>>> GetStaffsByDepartment()
+        {
+            var staffs = await _service.GetStaffsByDepartment();
+            if (staffs == null || !staffs.Value.Any())
+            {
+                return NotFound("No Staffs found in the specified departments");
+            }
+
+            return Ok(staffs.Value);
+        }
+        //       
+
+        [HttpGet("staffs-not-in-doctor")]
+public async Task<ActionResult<IEnumerable<Staff>>> GetStaffsNotInDoctorTable()
+{
+    var staffs = await _service.GetStaffsNotInDoctorTable();
+    if (staffs == null || !staffs.Value.Any())
+    {
+        return NotFound("No Staffs found in the specified departments or not in the doctor table.");
+    }
+
+    return Ok(staffs.Value);
+}
+        [HttpGet("specializations")]
+public async Task<ActionResult<IEnumerable<Specialization>>> GetSpecializations()
+{
+    var specializations = await _service.GetAllSpecializationsAsync();
+    if (specializations == null || !specializations.Any())
+    {
+        return NotFound("No specializations found.");
+    }
+    return Ok(specializations);
+}
+
+
+
     }
 }

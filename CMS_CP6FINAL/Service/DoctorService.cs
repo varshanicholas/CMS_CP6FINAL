@@ -1,6 +1,7 @@
 ﻿using CMS_CP6FINAL.Model;
 using CMS_CP6FINAL.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -63,6 +64,30 @@ namespace CMS_CP6FINAL.Service
         public async Task<ActionResult<Doctor>> GetDoctorByPhoneNumber(string phoneNumber)
         {
             return await _repository.GetDoctorByPhoneNumber(phoneNumber);
+        }
+
+
+        public async Task<ActionResult<IEnumerable<Staff>>> GetStaffsByDepartment()
+        {
+            return await _repository.GetStaffsByDepartment();
+        }
+
+
+        public async Task<ActionResult<IEnumerable<Staff>>> GetStaffsNotInDoctorTable()
+        {
+            return await _repository.GetStaffsNotInDoctorTable();
+        }
+        public async Task<ActionResult<Doctor>> PostDoctorById(int staffId, Doctor doctor)
+        {
+            return await _repository.PostDoctorById(staffId, doctor); // New method
+        }
+
+
+      
+
+        public async Task<IEnumerable<Specialization>> GetAllSpecializationsAsync()
+        {
+            return await _repository.GetAllSpecializationsAsync();
         }
     }
 }

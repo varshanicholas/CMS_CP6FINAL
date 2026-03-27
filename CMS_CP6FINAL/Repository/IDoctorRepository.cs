@@ -12,8 +12,14 @@ namespace CMS_CP6FINAL.Repository
         Task<ActionResult<Doctor>> PostDoctor(Doctor doctor);
         Task<ActionResult<int>> PostDoctorReturnId(Doctor doctor);
         Task<ActionResult<Doctor>> PutDoctor(int id, Doctor doctor);
+         Task<IEnumerable<Specialization>> GetAllSpecializationsAsync();
         JsonResult DeleteDoctor(int id);
         Task<ActionResult<Doctor>> GetDoctorByPhoneNumberOrDoctorId(string phoneNumber, int doctorId);
         Task<ActionResult<Doctor>> GetDoctorByPhoneNumber(string phoneNumber);
+        Task<ActionResult<IEnumerable<Staff>>> GetStaffsByDepartment();
+
+         Task<ActionResult<Doctor>> PostDoctorById(int staffId, Doctor doctor);
+        Task<ActionResult<IEnumerable<Staff>>> GetStaffsNotInDoctorTable();
+       
     }
 }

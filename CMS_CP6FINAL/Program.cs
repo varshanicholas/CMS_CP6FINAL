@@ -19,17 +19,30 @@ namespace CMS_CP6FINAL
 
             //CORS -ENABLE
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAllOrigin", builder =>
-                {
-                    builder.WithOrigins("http://localhost:4200")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAllOrigin", builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:4200")
+            //        .AllowAnyMethod()
+            //        .AllowAnyHeader()
+            //        .AllowCredentials();
 
-                });
-            });
+            //    });
+            //});
+
+
+            builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigin", builder =>
+    {
+        builder.WithOrigins("http://localhost:4200", "http://localhost:57904")
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+    });
+});
+
 
             
 
@@ -83,6 +96,7 @@ namespace CMS_CP6FINAL
 
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
             builder.Services.AddScoped<IStaffService, StaffService>();
+           builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
             builder.Services.AddScoped<ILoginService, LoginService>();

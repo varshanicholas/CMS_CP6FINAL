@@ -34,7 +34,10 @@ public class LoginService : ILoginService
     {
         return await _loginRepository.GetEligibleUsers();
     }
-
+    public async Task<IEnumerable<UserRegistration>> GetAllUsers()
+    {
+        return await _loginRepository.GetAllUsers();
+    }
     public async Task<bool> AssignUserCredentials(int staffId, string username, string password)
     {
         return await _loginRepository.AssignCredentials(staffId, username, password);
